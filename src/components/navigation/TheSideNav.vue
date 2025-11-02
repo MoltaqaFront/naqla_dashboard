@@ -1,0 +1,1738 @@
+<template>
+  <div class="side_nav_wrapper" :class="{ active: navIsActive }">
+    <!-- Start:: Toggle Btn -->
+    <button class="close_btn" @click="$emit('fireToggleNavDrawerEmit')">
+      <i class="fal fa-times"></i>
+    </button>
+    <!-- End:: Toggle Btn -->
+
+    <!-- Start:: Logo -->
+    <div class="logo_wrapper" v-if="getAppTheme == 'light_theme'">
+      <router-link class="logo" to="/home">
+        <img
+          src="@/assets/media/logo/logo.png"
+          alt="Logo"
+          width="170"
+          height="125"
+        />
+      </router-link>
+    </div>
+
+    <div class="logo_wrapper" v-else>
+      <router-link class="logo" to="/home">
+        <img
+          src="@/assets/media/logo/logo.png"
+          alt="Logo"
+          width="170"
+          height="125"
+        />
+      </router-link>
+    </div>
+    <!-- End:: Logo -->
+
+    <!-- Start:: Side Nav Links -->
+    <div class="side_nav_links_wrapper">
+      <!-- Start:: Home Route -->
+      <div class="home_route" @click="$emit('fireToggleNavDrawerEmit')">
+        <router-link to="/home">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/home.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.dashboard") }}
+          </span>
+        </router-link>
+      </div>
+      <!-- End:: Home Route -->
+
+      <!-- Start::  Roles and Admins Routes-->
+      <div class="side_routes_wrapper">
+        <a-menu
+          style="width: 100%"
+          mode="vertical"
+          :open-keys="openKeys"
+          @openChange="onOpenChange"
+          v-if="
+            $can('roles index', 'roles') ||
+            $can('permissions index', 'permissions') ||
+            $can('users index', 'users')
+          "
+        >
+          <a-sub-menu
+            v-for="item in sideNavbarList_Admins"
+            :key="item.key"
+            :data-type="!item.children ? 'single_route' : ''"
+          >
+            <template v-if="item.children">
+              <span slot="title">
+                <img :src="item.icon" alt="icon" width="35" height="35" />
+                <span> {{ item.title }} </span>
+              </span>
+
+              <a-menu-item
+                v-for="childItem in item.children"
+                :key="childItem.key"
+                v-if="childItem.hasPermission"
+              >
+                <button
+                  v-if="childItem.hasPermission"
+                  class="text-start w-100"
+                  @click="$emit('fireToggleNavDrawerEmit')"
+                >
+                  <router-link :to="childItem.route">
+                    <i class="fad fa-circle"></i>
+                    {{ childItem.title }}
+                  </router-link>
+                </button>
+              </a-menu-item>
+            </template>
+          </a-sub-menu>
+        </a-menu>
+      </div>
+      <!-- <div class="side_routes_wrapper side_routes_wrapper_clients">
+        <a-menu
+          style="width: 100%"
+          mode="vertical"
+          :open-keys="openKeys"
+          @openChange="onOpenChange"
+          v-if="$can('clients index', 'clients')"
+        >
+          <a-sub-menu
+            v-for="item in sideNavbarList_users"
+            :key="item.key"
+            :data-type="!item.children ? 'single_route' : ''"
+          >
+            <template v-if="item.children">
+              <span slot="title">
+                <img :src="item.icon" alt="icon" width="35" height="35" />
+                <span> {{ item.title }} </span>
+              </span>
+
+              <a-menu-item
+                v-for="childItem in item.children"
+                :key="childItem.key"
+              >
+                <button
+                  v-if="childItem.hasPermission"
+                  class="text-start w-100"
+                  @click="$emit('fireToggleNavDrawerEmit')"
+                >
+                  <router-link :to="childItem.route">
+                    <i class="fad fa-circle"></i>
+                    {{ childItem.title }}
+                  </router-link>
+                </button>
+              </a-menu-item>
+            </template>
+          </a-sub-menu>
+        </a-menu>
+      </div> -->
+      <!-- End::  Roles and Admins Routes -->
+
+      <!-- Start:: Admins Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('admins index', 'admins')"
+      >
+        <router-link to="/admins/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/admins.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.adminsManeg") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: Admins Route -->
+      <!-- Start:: Capacities Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('capacities index', 'capacities')"
+      >
+        <router-link to="/Capacities/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/orders.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.Capacities") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: Admins Route -->
+
+      <!-- Start:: users Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('users index', 'users')"
+      >
+        <router-link to="/users/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/users.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.manage_users") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: users Route -->
+
+      <!-- Start:: users Route -->
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('clients index', 'clients')"
+      >
+        <router-link to="/Clients/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/users.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.Clients.title") }}
+          </span>
+        </router-link>
+      </div>
+      <!-- End:: users Route -->
+
+      <!-- Start:: Customers Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('customers index', 'customers')"
+      >
+        <router-link to="/Customers/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/users_red.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.Customers.title") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: Customers Route -->
+
+      <!-- Start:: Students Route -->
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('providers index', 'providers')"
+      >
+        <router-link to="/providers/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/users.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.providers") }}
+          </span>
+        </router-link>
+      </div>
+      <!-- End:: Students Route -->
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('vehicletypes index', 'vehicletypes')"
+      >
+        <router-link to="/vehicle-types/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/mechanic.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.vehicletypes") }}
+          </span>
+        </router-link>
+      </div>
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('vehiclebrands index', 'vehiclebrands')"
+      >
+        <router-link to="/vehiclebrands/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/mechanic.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.vehiclebrands") }}
+          </span>
+        </router-link>
+      </div>
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('vehiclemodels index', 'vehiclemodels')"
+      >
+        <router-link to="/vehiclemodels/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/mechanic.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.vehiclemodels") }}
+          </span>
+        </router-link>
+      </div>
+
+      <!-- Start:: academic stages Route -->
+
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('geartypes index', 'geartypes')"
+      >
+        <router-link to="/geartypes/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/settings.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.geartypes") }}
+          </span>
+        </router-link>
+      </div>
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('fueltypes index', 'fueltypes')"
+      >
+        <router-link to="/fueltypes/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/settings.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.fueltypes") }}
+          </span>
+        </router-link>
+      </div>
+
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('academic stages index', 'academic-stages')"
+      >
+        <router-link to="/academic-stages/all">
+          <span
+            class="route_icon d-flex justify-center"
+            style="
+              background-color: rgba(59, 179, 227, 0.3);
+              border-radius: 6px;
+              width: 40px;
+              height: 40px;
+            "
+          >
+            <img
+              src="@/assets/media/icons/ui_icons/stages.png"
+              alt="icon"
+              width="35"
+              height="35"
+              class="m-auto"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.academic_stages") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: academic stages Route -->
+
+      <!-- Start:: academic years Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('academic years index', 'academic-years')"
+      >
+        <router-link to="/academic-years/all">
+          <span
+            class="route_icon d-flex justify-center"
+            style="
+              background-color: rgba(242, 136, 48, 0.3);
+              border-radius: 6px;
+              width: 40px;
+              height: 40px;
+            "
+          >
+            <img
+              src="@/assets/media/icons/ui_icons/academic_years.png"
+              alt="icon"
+              width="25"
+              height="25"
+              class="m-auto"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.academic_years") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: academic years Route -->
+
+      <!-- Start:: Specializations Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('specialization index', 'specialization')"
+      >
+        <router-link to="/specializations/all">
+          <span
+            class="route_icon d-flex justify-center"
+            style="
+              background-color: rgba(127, 173, 57, 0.3);
+              border-radius: 6px;
+              width: 40px;
+              height: 40px;
+            "
+          >
+            <img
+              src="@/assets/media/icons/ui_icons/badge.png"
+              alt="icon"
+              width="25"
+              height="25"
+              class="m-auto"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.specializations") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: Specializations Route -->
+
+      <!-- Start:: Subjects Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('study subject index', 'study-subject')"
+      >
+        <router-link to="/subjects/all">
+          <span
+            class="route_icon d-flex justify-center"
+            style="
+              background-color: rgba(114, 163, 153, 0.3);
+              border-radius: 6px;
+              width: 40px;
+              height: 40px;
+            "
+          >
+            <img
+              src="@/assets/media/icons/ui_icons/books.png"
+              alt="icon"
+              width="30"
+              height="30"
+              class="m-auto"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.subjects") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: Subjects Route -->
+
+      <!-- Start:: Categories Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('course category index', 'course-category')"
+      >
+        <router-link to="/categories/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/folder.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.categories") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: Categories Route -->
+
+      <!-- Start:: main_sections Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('categories index', 'categories')"
+      >
+        <router-link to="/main-categories/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/folder.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.main_section") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: main_sections Route -->
+
+      <!-- Start:: sub_sections Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('subcategories index', 'subcategories')"
+      >
+        <router-link to="/sub-categories/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/folder.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.sub_sections") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: sub_sections Route -->
+
+      <!-- Start:: orders Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('orders index', 'orders')"
+      >
+        <router-link to="/orders/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/paymentmethods.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.orders") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: orders Route -->
+      <!-- Start:: orders Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('coupons index', 'coupons')"
+      >
+        <router-link to="/financialorders/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/budgeting.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.FinancialOrders") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: orders Route -->
+      <!-- Start:: orders Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('coupons index', 'coupons')"
+      >
+        <router-link to="/financialpack/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/budgeting.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.financialpack") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: orders Route -->
+      <!-- Start:: orders Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('coupons index', 'coupons')"
+      >
+        <router-link to="/coupons/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/coupon.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.coupons") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: orders Route -->
+
+      <!-- Start:: reasons Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('reasonscancellations index', 'reasonscancellations')"
+      >
+        <router-link to="/reasons/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/cancel.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.reasons") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: reasons Route -->
+
+      <!-- Start:: sideNavbarList_providers Route -->
+      <div class="side_routes_wrapper">
+        <a-menu
+          style="width: 100%"
+          mode="vertical"
+          :open-keys="openKeys"
+          @openChange="onOpenChange"
+          v-if="$can('delegaterequests index', 'delegaterequests')"
+        >
+          <a-sub-menu
+            v-for="item in sideNavbarList_providers"
+            :key="item.key"
+            :data-type="!item.children ? 'single_route' : ''"
+            style="border: none"
+          >
+            <template v-if="item.children">
+              <span slot="title">
+                <img :src="item.icon" alt="icon" width="35" height="35" />
+                <span> {{ item.title }} </span>
+              </span>
+
+              <a-menu-item
+                v-for="childItem in item.children"
+                :key="childItem.key"
+              >
+                <button
+                  v-if="childItem.hasPermission"
+                  class="text-start w-100"
+                  @click="$emit('fireToggleNavDrawerEmit')"
+                >
+                  <router-link :to="childItem.route">
+                    <i class="fad fa-circle"></i>
+                    {{ childItem.title }}
+                  </router-link>
+                </button>
+              </a-menu-item>
+            </template>
+          </a-sub-menu>
+        </a-menu>
+      </div>
+      <!-- Start:: sideNavbarList_providers Route -->
+
+      <!-- Start:: RequestWallets Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('requestwallets index', 'requestwallets')"
+      >
+        <router-link to="/RequestWallets/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/bill.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.Users.wallet-settlement-requests") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: RequestWallets Route -->
+
+      <!-- Start:: workplaces Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('workplaces index', 'workplaces')"
+      >
+        <router-link to="/workplaces/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/house.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.workplaces") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: workplaces Route -->
+
+      <!-- Start:: services Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('services index', 'services')"
+      >
+        <router-link to="/services/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/service.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.services") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: services Route -->
+
+      <!-- Start:: places Route -->
+      <!-- <div class="side_routes_wrapper">
+        <a-menu
+          style="width: 100%"
+          mode="vertical"
+          :open-keys="openKeys"
+          @openChange="onOpenChange"
+          v-if="
+          $can('countries index', 'countries') || $can('areas index', 'areas') || $can('cities index', 'cities')
+          "
+        >
+          <a-sub-menu
+            v-for="item in sideNavbarList_Places"
+            :key="item.key"
+            :data-type="!item.children ? 'single_route' : ''"
+            style="border: none"
+          >
+            <template v-if="item.children">
+              <span slot="title">
+                <img :src="item.icon" alt="icon" width="35" height="35" />
+                <span> {{ item.title }} </span>
+              </span>
+
+              <a-menu-item
+                v-for="childItem in item.children"
+                :key="childItem.key"
+              >
+                <button
+                  v-if="childItem.hasPermission"
+                  class="text-start w-100"
+                  @click="$emit('fireToggleNavDrawerEmit')"
+                >
+                  <router-link :to="childItem.route">
+                    <i class="fad fa-circle"></i>
+                    {{ childItem.title }}
+                  </router-link>
+                </button>
+              </a-menu-item>
+            </template>
+          </a-sub-menu>
+        </a-menu>
+      </div> -->
+
+      <!-- Start:: cities Route -->
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('countries index', 'countries')"
+      >
+        <router-link to="/countries/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/country.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.countries") }}
+          </span>
+        </router-link>
+      </div>
+      <!-- End:: cities Route -->
+      <!-- Start:: cities Route -->
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('regions index', 'regions')"
+      >
+        <router-link to="/cities/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/city.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.regions") }}
+          </span>
+        </router-link>
+      </div>
+      <!-- End:: cities Route -->
+
+      <!-- Start:: places Route -->
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('cities index', 'cities')"
+      >
+        <router-link to="/districts/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/village.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("TITLES.cities") }}
+          </span>
+        </router-link>
+      </div>
+      <!-- End:: districts Route -->
+
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('hobbies index', 'hobbies')"
+      >
+        <router-link to="/hobbies/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/hobby.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.hobbies_management") }}
+          </span>
+        </router-link>
+      </div>
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('nationalities index', 'nationalities')"
+      >
+        <router-link to="/nationalities/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/nationalities.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.nationalities_management") }}
+          </span>
+        </router-link>
+      </div> -->
+
+      <!-- Start:: Customer Opinions Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('customeropinions index', 'customeropinions')"
+      >
+        <router-link to="/customeropinions/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/authourization.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.customer_opinions_management") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: Customer Opinions Route -->
+
+      <!-- Start:: banks Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('banks index', 'banks')"
+      >
+        <router-link to="/banks/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/bank.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.banks.title") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: banks Route -->
+
+      <!-- Start:: packages Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('packages index', 'packages')"
+      >
+        <router-link to="/packages/all">
+          <span
+            class="route_icon d-flex justify-center"
+            style="
+              background-color: rgba(107, 219, 182, 0.3);
+              border-radius: 6px;
+              width: 40px;
+              height: 40px;
+            "
+          >
+            <img
+              src="@/assets/media/icons/ui_icons/package.svg"
+              alt="icon"
+              width="30"
+              height="30"
+              class="m-auto"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.package_management") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: packages Route -->
+
+      <!-- Start:: acceptedproviders Route -->
+      <!-- v-if="$can('withdraw_requests index', 'withdraw_requests')" -->
+      <!-- v-if="$can('package index', 'package')" -->
+      <!-- <div class="home_route" @click="$emit('fireToggleNavDrawerEmit')" v-if="$can('withdrawal_requests index', 'withdrawal_requests')">
+        <router-link to="/request-wallets/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/bill.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.service_provider_wallet_requests") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: service_provider_wallet_requests Route -->
+
+      <!-- Start:: auctions Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('auctions index', 'auctions')"
+      >
+        <router-link to="/auctions/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/adventage.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.auctions.title") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: auctions Route -->
+
+      <!-- Start:: durations Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('auctiondurations index', 'auctiondurations')"
+      >
+        <router-link to="/durations/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/hs_code.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.durations") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: durations Route -->
+
+      <!-- Start:: managements Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('management index', 'management')"
+      >
+        <router-link to="/managements/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/pm.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.manage_departments_and_managers") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: managements Route -->
+
+      <!-- Start:: sectors Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('sections index', 'sections')"
+      >
+        <router-link to="/Sectors/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/module.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.sectors.title") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: sectors Route -->
+
+      <!-- Start:: ads Route -->
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('advertisements index', 'advertisements')"
+      >
+        <router-link to="/Ads/all">
+          <span
+            class="route_icon d-flex justify-center"
+            style="
+              background-color: rgba(212, 200, 72, 0.3);
+              border-radius: 6px;
+              width: 40px;
+              height: 40px;
+            "
+          >
+            <img
+              src="@/assets/media/icons/ui_icons/ads2.png"
+              alt="icon"
+              width="30"
+              height="30"
+              class="m-auto"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.ads.title") }}
+          </span>
+        </router-link>
+      </div>
+      <!-- End:: ads Route -->
+
+      <!-- Start:: blogs Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('blogs index', 'blogs')"
+      >
+        <router-link to="/Blogs/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/book_mark.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.blogs.title") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: blogs Route -->
+
+      <!-- Start::financial-reports Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('financialreports auctions', 'financialreports')"
+      >
+        <router-link to="/auctions-financial-reports/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/bill.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.auctions_report") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End::financial-reports Route -->
+
+      <!-- Start::packages-financial-reports Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('financialreports packages', 'financialreports')"
+      >
+        <router-link to="/packages-financial-reports/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/bill.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.packages_report") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End::financial-reports Route -->
+
+      <!-- Start::financial-not-finished-reports Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="
+          $can('financial_reports finishedordersreports', 'financial_reports')
+        "
+      >
+        <router-link to="/financial-finished-reports/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/areas.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.completed_orders") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End::financial-not-finished-reports Route -->
+
+      <!-- Start:: rates Route -->
+      <!-- <div class="side_routes_wrapper">
+        <a-menu
+          style="width: 100%"
+          mode="vertical"
+          :open-keys="openKeys"
+          @openChange="onOpenChange"
+          v-if="$can('rates apprates', 'rates')"
+        >
+          <a-sub-menu
+            v-for="item in sideNavbarList_Rates"
+            :key="item.key"
+            :data-type="!item.children ? 'single_route' : ''"
+            style="border: none"
+          >
+            <template v-if="item.children">
+              <span slot="title">
+                <img :src="item.icon" alt="icon" width="35" height="35" />
+                <span> {{ item.title }} </span>
+              </span>
+
+              <a-menu-item
+                v-for="childItem in item.children"
+                :key="childItem.key"
+              >
+                <button
+                  v-if="childItem.hasPermission"
+                  class="text-start w-100"
+                  @click="$emit('fireToggleNavDrawerEmit')"
+                >
+                  <router-link :to="childItem.route">
+                    <i class="fad fa-circle"></i>
+                    {{ childItem.title }}
+                  </router-link>
+                </button>
+              </a-menu-item>
+            </template>
+          </a-sub-menu>
+        </a-menu>
+      </div> -->
+      <!-- Start:: rates Route -->
+
+      <!-- Start:: notifications Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('notifications index', 'notifications')"
+      >
+        <router-link to="/all-notifications/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/notifications.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.notifications.title") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: notifications Route -->
+
+      <!-- Start:: FAQ Route -->
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('faqs index', 'faqs')"
+      >
+        <router-link to="/questions/all">
+          <span
+            class="route_icon d-flex justify-center"
+            style="
+              background-color: rgba(207, 70, 195, 0.3);
+              border-radius: 6px;
+              width: 40px;
+              height: 40px;
+            "
+          >
+            <img
+              src="@/assets/media/icons/ui_icons/question.svg"
+              alt="icon"
+              width="35"
+              height="35"
+              class="m-auto"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.faq") }}
+          </span>
+        </router-link>
+      </div>
+      <!-- End:: FAQ Route -->
+
+      <!-- Start:: app settings Route -->
+      <!-- <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('settings index', 'settings')"
+      >
+        <router-link to="/app_settings">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/settings.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.settings.general_app") }}
+          </span>
+        </router-link>
+      </div> -->
+      <!-- End:: app settings Route -->
+      <!-- Start:: Side Nav Routes -->
+      <div class="side_routes_wrapper">
+        <a-menu
+          style="width: 100%"
+          mode="vertical"
+          :open-keys="openKeys"
+          @openChange="onOpenChange"
+          v-if="$can('settings index', 'settings')"
+        >
+          <a-sub-menu
+            v-for="item in sideNavbarList"
+            :key="item.key"
+            :data-type="!item.children ? 'single_route' : ''"
+            style="border: none"
+          >
+            <template v-if="item.children">
+              <span slot="title">
+                <img :src="item.icon" alt="icon" width="35" height="35" />
+                <span> {{ item.title }} </span>
+              </span>
+
+              <a-menu-item
+                v-for="childItem in item.children"
+                :key="childItem.key"
+              >
+                <button
+                  class="text-start w-100"
+                  @click="$emit('fireToggleNavDrawerEmit')"
+                  v-if="childItem.hasPermission"
+                >
+                  <router-link :to="childItem.route">
+                    <i class="fad fa-circle"></i>
+                    {{ childItem.title }}
+                  </router-link>
+                </button>
+              </a-menu-item>
+            </template>
+          </a-sub-menu>
+        </a-menu>
+      </div>
+      <!-- End:: Side Nav Routes -->
+
+      <!-- Start:: contacts Route -->
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('contactus index', 'contactus')"
+      >
+        <router-link to="/contact-messages/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/messages.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("SIDENAV.ContactMessages.title") }}
+          </span>
+        </router-link>
+      </div>
+      <!-- End:: contacts Route -->
+
+      <div class="side_routes_wrapper">
+        <a-menu style="width: 100%" mode="inline">
+          <!-- Start:: Logout Tab -->
+          <a-sub-menu
+            key="logout"
+            @titleClick="logoutConfirmationModalIsOpen = true"
+          >
+            <!-- ========= Start:: Main Tab -->
+            <span slot="title" class="logout_btn">
+              <img
+                src="../../assets/media/icons/ui_icons/logout.svg"
+                alt="icon"
+                width="35"
+                height="35"
+              />
+              <span>
+                {{ $t("SIDENAV.Logout.title") }}
+              </span>
+            </span>
+            <!-- ========= End:: Main Tab -->
+          </a-sub-menu>
+          <!-- End:: Logout Tab -->
+        </a-menu>
+      </div>
+      <!-- End:: Side Nav Routes -->
+
+      <!-- Start:: Logout Confirmation Modal -->
+      <v-dialog v-model="logoutConfirmationModalIsOpen">
+        <v-card>
+          <v-card-title class="text-h5 justify-center">
+            {{ $t("TITLES.logoutConfirmingMessage") }}
+          </v-card-title>
+          <v-card-actions>
+            <v-btn class="modal_confirm_btn" @click="logout">{{
+              $t("BUTTONS.logout")
+            }}</v-btn>
+
+            <v-btn
+              class="modal_cancel_btn"
+              @click="logoutConfirmationModalIsOpen = false"
+              >{{ $t("BUTTONS.cancel") }}</v-btn
+            >
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- End:: Logout Confirmation Modal -->
+    </div>
+  </div>
+  <!-- End:: Side Nav Links -->
+</template>
+
+<script>
+import { mapGetters, mapActions } from "vuex";
+
+export default {
+  name: "SideNav",
+
+  emits: ["fireToggleNavDrawerEmit"],
+
+  props: {
+    navIsActive: {
+      type: Boolean,
+      required: true,
+    },
+  },
+
+  computed: {
+    // Start:: Vuex Get Authenticated User Data
+    ...mapGetters({
+      getAppTheme: "AppThemeModule/getAppTheme",
+      getAuthenticatedUserData: "AuthenticationModule/getAuthenticatedUserData",
+    }),
+    // End:: Vuex Get Authenticated User Data
+
+    // Start:: Extract Side Nav Keys
+    extractSideNavItemsKeys() {
+      let extractedKeys = [];
+      this.sideNavbarList_Admins.forEach((element) => {
+        extractedKeys.push(element["key"]);
+      });
+      this.sideNavbarList_Places.forEach((element) => {
+        extractedKeys.push(element["key"]);
+      });
+      this.sideNavbarList.forEach((element) => {
+        extractedKeys.push(element["key"]);
+      });
+      this.sideNavbarList_Rates.forEach((element) => {
+        extractedKeys.push(element["key"]);
+      });
+      return extractedKeys;
+    },
+
+    // End:: Extract Side Nav Keys
+  },
+
+  data() {
+    return {
+      // Start:: Controle Open Tabs Data
+      openKeys: [],
+      // End:: Controle Open Tabs Data
+
+      // Start:: Side Navbar List
+      sideNavbarList_Admins: [
+        {
+          key: "dashboard",
+          title: this.$t("SIDENAV.control_admins"),
+          icon: require("@/assets/media/icons/ui_icons/panel.png"),
+          hasPermission:
+            this.$can("roles index", "roles") ||
+            this.$can("users index", "users"),
+          children: [
+            {
+              key: "roles",
+              title: this.$t("SIDENAV.Roles.title"),
+              route: "/roles/all",
+              hasPermission:
+                this.$can("roles index", "roles") ||
+                this.$can("permissions index", "permissions"),
+            },
+            {
+              key: "admins",
+              title: this.$t("SIDENAV.Admins.title"),
+              route: "/admins/all",
+              hasPermission: this.$can("users index", "users"),
+            },
+          ],
+        },
+      ],
+
+      sideNavbarList_Places: [
+        {
+          key: "dashboard_places",
+          title: this.$t("PLACEHOLDERS.places"),
+          icon: require("@/assets/media/icons/ui_icons/country.png"),
+          hasPermission:
+            this.$can("countries index", "countries") ||
+            this.$can("areas index", "areas") ||
+            this.$can("cities index", "cities") ||
+            this.$can("districts index", "districts"),
+          children: [
+            {
+              key: "countries",
+              title: this.$t("PLACEHOLDERS.manage_countries"),
+              route: "/countries/all",
+              hasPermission: this.$can("countries index", "countries"),
+            },
+            {
+              key: "areas",
+              title: this.$t("PLACEHOLDERS.manage_areas"),
+              route: "/areas/all",
+              hasPermission: this.$can("areas index", "areas"),
+            },
+            {
+              key: "cities",
+              title: this.$t("PLACEHOLDERS.cities"),
+              route: "/cities/all",
+              hasPermission: this.$can("cities index", "cities"),
+            },
+            {
+              key: "districts",
+              title: this.$t("PLACEHOLDERS.districts"),
+              route: "/districts/all",
+              hasPermission: this.$can("districts index", "districts"),
+            },
+          ],
+        },
+      ],
+
+      sideNavbarList_users: [
+        {
+          key: "users_control",
+          title: this.$t("PLACEHOLDERS.manage_users"),
+          icon: require("@/assets/media/icons/ui_icons/clients.svg"),
+          hasPermission: this.$can("clients index", "clients"),
+          children: [
+            {
+              key: "users",
+              title: this.$t("PLACEHOLDERS.manage_all_users"),
+              route: "/clients/all",
+              hasPermission: this.$can("clients index", "clients"),
+            },
+            {
+              key: "joinUsers",
+              title: this.$t("PLACEHOLDERS.joinClients"),
+              route: "/joinClients/all",
+              hasPermission: this.$can("clients index", "clients"),
+            },
+          ],
+        },
+      ],
+
+      sideNavbarList: [
+        {
+          key: "appContent",
+          title: this.$t("SIDENAV.AppContent.title"),
+          icon: require("@/assets/media/icons/ui_icons/book_mark.svg"),
+          children: [
+            {
+              key: "contact",
+              title: this.$t("PLACEHOLDERS.contact_admins"),
+              route: "/contact_settings",
+              hasPermission: this.$can("settings index", "settings"),
+            },
+            {
+              key: "AboutUs",
+              title: this.$t("SIDENAV.AppContent.aboutUs"),
+              route: "/app-content/about-us",
+              hasPermission: this.$can("settings index", "settings"),
+            },
+            {
+              key: "termsAndConditions",
+              title: this.$t("SIDENAV.AppContent.termsAndConditions"),
+              route: "/app-content/terms",
+              hasPermission: this.$can("settings index", "settings"),
+            },
+            {
+              key: "privacyPolicy",
+              title: this.$t("SIDENAV.AppContent.privacyPolicy"),
+              route: "/app-content/policy",
+              hasPermission: this.$can("settings index", "settings"),
+            },
+            {
+              key: "delete-account",
+              title: this.$t("PLACEHOLDERS.how_to_delete_account"),
+              route: "/app-content/delete-account",
+              hasPermission: this.$can("settings index", "settings"),
+            },
+            {
+              key: "onboarding",
+              title: this.$t("PLACEHOLDERS.on_boarding"),
+              route: "/app-content/OnBoarding",
+              hasPermission: this.$can("settings index", "settings"),
+            },
+          ],
+        },
+      ],
+
+      sideNavbarList_Rates: [
+        {
+          key: "rates",
+          title: this.$t("PLACEHOLDERS.comments_management"),
+          icon: require("@/assets/media/icons/ui_icons/star.svg"),
+          hasPermission: this.$can("rates index", "rates"),
+          children: [
+            {
+              key: "app_rate",
+              title: this.$t("PLACEHOLDERS.app_ratings"),
+              route: "/app-rate/all",
+              hasPermission: this.$can("rates apprates", "rates"),
+            },
+            {
+              key: "store_rate",
+              title: this.$t("PLACEHOLDERS.store_ratings"),
+              route: "/store-rate/all",
+              hasPermission: this.$can("rates salonrates", "rates"),
+            },
+          ],
+        },
+      ],
+
+      sideNavbarList_providers: [
+        {
+          key: "providers",
+          title: this.$t("PLACEHOLDERS.delegates_management"),
+          icon: require("@/assets/media/icons/ui_icons/clients.svg"),
+          hasPermission: this.$can(
+            "delegaterequests index",
+            "delegaterequests"
+          ),
+          children: [
+            {
+              key: "providers_join",
+              title: this.$t("PLACEHOLDERS.delegate_join_requests"),
+              route: "/delegate-requests/all",
+              hasPermission: this.$can(
+                "delegaterequests index",
+                "delegaterequests"
+              ),
+            },
+            {
+              key: "providers_list",
+              title: this.$t("PLACEHOLDERS.teachers"),
+              route: "/teachers/all",
+              hasPermission: this.$can("teachers index", "teachers"),
+            },
+          ],
+        },
+      ],
+
+      // Start:: Modal Controlling Data
+      logoutConfirmationModalIsOpen: false,
+      // End:: Modal Controlling Data
+    };
+  },
+
+  methods: {
+    // Start:: Vuex Auth Actions
+    ...mapActions({
+      logout: "AuthenticationModule/logout",
+    }),
+    // End:: Vuex Auth Actions
+    handleClick() {
+      this.open = !this.open;
+    },
+    closeMenu() {
+      this.open = false;
+    },
+
+    handleClickOrder() {
+      this.openOrder = !this.openOrder;
+    },
+    closeMenuOrder() {
+      this.openOrder = false;
+    },
+    handleClickcities() {
+      this.openCities = !this.openCities;
+    },
+    closeMenuCities() {
+      this.openCities = false;
+    },
+    // Start:: Controle Open Tabs
+    onOpenChange(openKeys) {
+      const latestOpenKey = openKeys.find(
+        (key) => this.openKeys.indexOf(key) === -1
+      );
+      if (this.extractSideNavItemsKeys.indexOf(latestOpenKey) === -1) {
+        this.openKeys = openKeys;
+      } else {
+        this.openKeys = latestOpenKey ? [latestOpenKey] : [];
+      }
+    },
+    // End:: Controle Open Tabs
+  },
+
+  created() {},
+};
+</script>
