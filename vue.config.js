@@ -2,7 +2,7 @@ module.exports = {
   publicPath: process.env.NODE_ENV === "production" ? "/dashboard" : "/",
 
   pwa: {
-    name: "Thoud admin Dashboard",
+    name: "Naqla admin Dashboard",
     description: "",
     startUrl: "index.html",
     scope: ".",

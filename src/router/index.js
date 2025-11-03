@@ -2218,8 +2218,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "DelegateRequests index",
-                subject: "DelegateRequests",
+                action: "delegaterequests index",
+                subject: "delegaterequests",
               },
             },
           },
@@ -2231,8 +2231,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "DelegateRequests show",
-                subject: "DelegateRequests",
+                action: "delegaterequests show",
+                subject: "delegaterequests",
               },
             },
           },

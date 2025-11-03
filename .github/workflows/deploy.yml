@@ -1,0 +1,55 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      APP_DIR: /home/${{ secrets.CPANEL_USER }}/public_html/website_test/test_cicd
+      NODE_VER: 20
+      REPO_URL: https://github.com/MoltaqaFront/test_cicd.git
+      REPO_SLUG: /MoltaqaFront/test_cicd.git
+      GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Remote deploy (git reset and build)
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          envs: APP_DIR,NODE_VER,REPO_URL,REPO_SLUG,GIT_TOKEN
+          script: |
+            set -e
+
+            echo "Deploying to $APP_DIR"
+            mkdir -p "$APP_DIR"
+            cd "$APP_DIR"
+
+            # Ensure git repo exists and origin is set (tokenless)
+            git rev-parse --is-inside-work-tree >/dev/null 2>&1 || git init -q
+            if ! git remote get-url origin >/dev/null 2>&1; then
+              git remote add origin "$REPO_URL"
+            fi
+
+            # Temporarily set origin to auth URL for fetch/reset, then restore
+            AUTH_URL="https://x-access-token:${GIT_TOKEN}@github.com/${REPO_SLUG}"
+            ORIGIN_URL="$(git remote get-url origin 2>/dev/null || echo "$REPO_URL")"
+            git remote set-url origin "$AUTH_URL"
+            git fetch --all --prune
+            git reset --hard origin/main
+            git remote set-url origin "$ORIGIN_URL"
+
+            # Activate cPanel Node environment if available
+            source ~/nodevenv/"$APP_DIR"/${NODE_VER}/bin/activate 2>/dev/null || true
+
+            npm install
+            npm run build
+
