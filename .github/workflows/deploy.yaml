@@ -44,7 +44,7 @@ jobs:
             ORIGIN_URL="$(git remote get-url origin 2>/dev/null || echo "$REPO_URL")"
             git remote set-url origin "$AUTH_URL"
             git fetch --all --prune
-            git reset --hard origin/main
+            git reset --hard origin/master
             git remote set-url origin "$ORIGIN_URL"
 
             # Activate cPanel Node environment if available
