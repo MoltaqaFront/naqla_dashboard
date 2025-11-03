@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === "production" ? "/naqla_dashboard" : "/",
+  publicPath: process.env.NODE_ENV === "production" ? "/dashboard/naqla_dashboard/" : "/",
 
   pwa: {
     name: "Naqla admin Dashboard",
