@@ -51,11 +51,11 @@ jobs:
             source ~/nodevenv/"$APP_DIR"/${NODE_VER}/bin/activate 2>/dev/null || true
 
             npm install
-            
+
             # Fix permissions for node_modules binaries
             echo "Setting permissions for Node.js binaries..."
             find node_modules/.bin -type f -exec chmod +x {} \; 2>/dev/null || true
-            
+
             # Try to build with proper permissions
             echo "Building the project..."
             npm run build || {
@@ -114,7 +114,7 @@ jobs:
             # Fix CSS and JS paths to match the publicPath
             find . -name "*.html" -type f -exec sed -i 's|href="css/|href="/dashboard/naqla_dashboard/css/|g' {} \;
             find . -name "*.html" -type f -exec sed -i 's|src="js/|src="/dashboard/naqla_dashboard/js/|g' {} \;
-            find . -name "*.html" -type f -exec sed -i 's|href="all\.css"|href="/dashboard/naqla_dashboard/css/all.css"|g' {} \;
+            find . -name "*.html" -type f -exec sed -i 's|href="/dashboard/naqla_dashboard/all\.css"|href="/dashboard/naqla_dashboard/css/all.css"|g' {} \;
 
             echo "Asset paths updated in HTML files"
 
