@@ -74,15 +74,48 @@ jobs:
 
             # Update HTML files to fix asset paths
             echo "Fixing asset paths in HTML files..."
-            # List HTML files for debugging
-            ls -la *.html 2>/dev/null || echo "No HTML files found in root"
+            # List files for debugging
+            echo "Files in root directory:"
+            ls -la *.html *.js *.css 2>/dev/null || echo "No HTML/JS/CSS files found in root"
+            echo "Directory structure:"
+            find . -name "*.html" -o -name "*.js" -o -name "*.css" | head -10
             
-            # Fix CSS and JS paths to match the publicPath
+            # Show content of index.html to see current paths
+            if [ -f "index.html" ]; then
+              echo "Current index.html head section:"
+              head -20 index.html | grep -E "(href|src)" || echo "No href/src found in first 20 lines"
+            fi
+            
+            # Fix all asset paths - handle both relative and absolute paths
             find . -name "*.html" -type f -exec sed -i 's|href="css/|href="/dashboard/naqla_dashboard/css/|g' {} \;
             find . -name "*.html" -type f -exec sed -i 's|src="js/|src="/dashboard/naqla_dashboard/js/|g' {} \;
             find . -name "*.html" -type f -exec sed -i 's|href="all\.css"|href="/dashboard/naqla_dashboard/css/all.css"|g' {} \;
             
+            # Also fix paths that might already have /dashboard/naqla_dashboard but are incorrect
+            find . -name "*.html" -type f -exec sed -i 's|src="/dashboard/naqla_dashboard/js/|src="/dashboard/naqla_dashboard/js/|g' {} \;
+            find . -name "*.html" -type f -exec sed -i 's|href="/dashboard/naqla_dashboard/css/|href="/dashboard/naqla_dashboard/css/|g' {} \;
+            
+            # Show updated paths
+            if [ -f "index.html" ]; then
+              echo "Updated index.html paths:"
+              grep -E "(href|src)" index.html | head -5 || echo "No href/src found"
+            fi
+            
             echo "Asset paths updated in HTML files"
+
+            # Set correct permissions for all files
+            echo "Setting file permissions..."
+            find . -type f -name "*.js" -exec chmod 644 {} \;
+            find . -type f -name "*.css" -exec chmod 644 {} \;
+            find . -type f -name "*.html" -exec chmod 644 {} \;
+            
+            # Verify final structure
+            echo "Final directory structure:"
+            ls -la
+            echo "JS files:"
+            find . -name "*.js" -type f | head -5
+            echo "CSS files:"
+            find . -name "*.css" -type f | head -5
 
             echo "Deployment completed successfully"
 
