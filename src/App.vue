@@ -24,6 +24,7 @@ export default {
   data() {
     return {
       receivedMessages: [],
+
       notificationCount: 0,
       // Start:: Notifications Menu Control Data
       notificationsMenuIsOpen: false,
@@ -44,7 +45,6 @@ export default {
   },
 
   created() {
-    // this.getData();
     this.readAllNotifications();
 
     navigator.serviceWorker.addEventListener("message", (event) => {
