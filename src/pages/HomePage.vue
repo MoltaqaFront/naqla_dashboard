@@ -10,7 +10,7 @@
       </div>
       <!--  =========== End:: Table Title =========== -->
 
-      ziad المعرض
+      <h1 style="color: red">A7a ya ziad ya 5aoul</h1>
       <ComingSoon />
 
       <!--  =========== Start:: Data Table =========== -->
