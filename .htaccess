@@ -1,8 +1,13 @@
 <IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteBase /dashboard
-RewriteRule ^dashboard/index\.html$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /dashboard/index.html [L]
+  RewriteEngine On
+
+  # Set the base directory for all rewrite rules
+  RewriteBase /dashboard/naqla_dashboard/
+
+  # Don't rewrite requests for existing files or directories
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  # Redirect all other requests to index.html
+  RewriteRule ^ index.html [L]
 </IfModule>

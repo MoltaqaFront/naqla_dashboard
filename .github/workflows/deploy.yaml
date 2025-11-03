@@ -72,5 +72,11 @@ jobs:
               echo "Moved all.css to existing css folder"
             fi
 
+            # Update HTML files to reference css/all.css
+            echo "Updating CSS references in HTML files..."
+            find . -name "*.html" -type f -exec sed -i 's|href="/dashboard/all\.css"|href="/dashboard/css/all.css"|g' {} \;
+            find . -name "*.html" -type f -exec sed -i 's|href="all\.css"|href="css/all.css"|g' {} \;
+            echo "Updated CSS references in HTML files"
+
             echo "Deployment completed successfully"
 
