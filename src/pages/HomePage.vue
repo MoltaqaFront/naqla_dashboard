@@ -10,7 +10,6 @@
       </div>
       <!--  =========== End:: Table Title =========== -->
 
-      <h1 style="color: red; z-index: 99; position: relative;">A7a ya ziad ya 5aoul</h1>
       <ComingSoon />
 
       <!--  =========== Start:: Data Table =========== -->
