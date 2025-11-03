@@ -72,11 +72,17 @@ jobs:
               echo "Moved all.css to existing css folder"
             fi
 
-            # Update HTML files to reference css/all.css
-            echo "Updating CSS references in HTML files..."
-            find . -name "*.html" -type f -exec sed -i 's|href="/dashboard/all\.css"|href="/dashboard/css/all.css"|g' {} \;
-            find . -name "*.html" -type f -exec sed -i 's|href="all\.css"|href="css/all.css"|g' {} \;
-            echo "Updated CSS references in HTML files"
+            # Update HTML files to fix asset paths
+            echo "Fixing asset paths in HTML files..."
+            # List HTML files for debugging
+            ls -la *.html 2>/dev/null || echo "No HTML files found in root"
+            
+            # Fix CSS and JS paths to match the publicPath
+            find . -name "*.html" -type f -exec sed -i 's|href="css/|href="/dashboard/naqla_dashboard/css/|g' {} \;
+            find . -name "*.html" -type f -exec sed -i 's|src="js/|src="/dashboard/naqla_dashboard/js/|g' {} \;
+            find . -name "*.html" -type f -exec sed -i 's|href="all\.css"|href="/dashboard/naqla_dashboard/css/all.css"|g' {} \;
+            
+            echo "Asset paths updated in HTML files"
 
             echo "Deployment completed successfully"
 
