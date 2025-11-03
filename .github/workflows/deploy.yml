@@ -9,10 +9,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      APP_DIR: /home/${{ secrets.CPANEL_USER }}/public_html/website_test/test_cicd
-      NODE_VER: 20
-      REPO_URL: https://github.com/MoltaqaFront/test_cicd.git
-      REPO_SLUG: /MoltaqaFront/test_cicd.git
+      APP_DIR: /home/${{ secrets.CPANEL_USER }}/public_html/dashboard/naqla_dashboard
+      NODE_VER: 14
+      REPO_URL: https://github.com/MoltaqaFront/naqla_dashboard.git
+      REPO_SLUG: /MoltaqaFront/naqla_dashboard.git
       GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
 
     steps:
