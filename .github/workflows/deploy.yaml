@@ -53,3 +53,24 @@ jobs:
             npm install
             npm run build
 
+            # Extract files from dist folder and clean up
+            echo "Extracting files from dist folder..."
+            if [ -d "dist" ]; then
+              # Move all files from dist to current directory
+              mv dist/* ./ 2>/dev/null || true
+              # Move hidden files if any
+              mv dist/.* ./ 2>/dev/null || true
+              # Remove empty dist folder
+              rmdir dist 2>/dev/null || true
+              echo "Dist folder extracted and removed"
+            fi
+
+            # Move all.css to existing css folder if it exists
+            echo "Organizing CSS files..."
+            if [ -f "all.css" ] && [ -d "css" ]; then
+              mv all.css css/
+              echo "Moved all.css to existing css folder"
+            fi
+
+            echo "Deployment completed successfully"
+
