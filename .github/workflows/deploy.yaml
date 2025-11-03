@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Remote deploy (git reset and build)
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.CPANEL_HOST }}
           username: ${{ secrets.CPANEL_USER }}
