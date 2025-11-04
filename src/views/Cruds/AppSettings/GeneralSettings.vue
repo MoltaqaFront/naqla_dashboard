@@ -196,30 +196,31 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: `settings?key=contacts`,
+          url: `settings?key=app-contacts`,
         });
         // Start:: Set Data
 
         // Transform the API response
         this.phones =
-          res.data.data[0]?.value?.phones?.map((phone) => ({
+          res.data.data.data[0]?.value?.phones?.map((phone) => ({
             phone: phone,
           })) || [];
         if (this.phones.length === 0) {
           this.phones.push({ phone: "" });
         }
-        this.data.WhatsApp_contact = res.data.data[0]?.value?.whatsapp;
-        this.data.twitter_link = res.data.data[0]?.value?.twitter;
-        this.data.facebook_link = res.data.data[0]?.value?.facebook;
-        this.data.instagram_link = res.data.data[0]?.value?.instagram;
-        this.data.tiktok_link = res.data.data[0]?.value?.tiktok;
-        this.data.snapchat_link = res.data.data[0]?.value?.snapchat;
-        this.data.tiktok_link = res.data.data[0]?.value?.tiktok;
-        this.data.telegram = res.data.data[0]?.value?.telegram;
-        this.data.email = res.data.data[0]?.value?.email;
-        this.data.android = res.data.data[0]?.value?.google_app_url;
-        this.data.ios = res.data.data[0]?.value?.apple_app_url;
-        this.data.linkedIn_link = res.data.data[0]?.value?.linkedin;
+
+        this.data.WhatsApp_contact = res.data.data.data[0]?.value?.watsApp;
+        this.data.twitter_link = res.data.data.data[0]?.value?.twitter;
+        this.data.facebook_link = res.data.data.data[0]?.value?.facebook;
+        this.data.instagram_link = res.data.data.data[0]?.value?.instagram;
+        this.data.tiktok_link = res.data.data.data[0]?.value?.tiktok;
+        this.data.snapchat_link = res.data.data.data[0]?.value?.snapchat;
+        this.data.tiktok_link = res.data.data.data[0]?.value?.tiktok;
+        this.data.telegram = res.data.data.data[0]?.value?.telegram;
+        this.data.email = res.data.data.data[0]?.value?.email;
+        this.data.android = res.data.data.data[0]?.value?.google_app_url;
+        this.data.ios = res.data.data.data[0]?.value?.apple_app_url;
+        this.data.linkedIn_link = res.data.data.data[0]?.value?.linkedin;
 
         // End:: Set Data
       } catch (error) {
@@ -234,7 +235,7 @@ export default {
 
       const REQUEST_DATA = new FormData();
       // Start:: Append Request Data
-      REQUEST_DATA.append("key", "contacts");
+      REQUEST_DATA.append("key", "app-contacts");
       this.phones.forEach((element) => {
         if (element.phone) {
           REQUEST_DATA.append(`value[phones][]`, element.phone);
@@ -277,7 +278,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `settings?key=contacts`,
+          url: `settings?key=app-contacts`,
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;

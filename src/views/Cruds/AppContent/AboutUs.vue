@@ -34,57 +34,57 @@
           <!-- Start:: En Content Text Editor -->
 
           <!-- Start:: Ar Content Text Editor -->
-          <base-text-editor
+          <!-- <base-text-editor
             col="6"
             :placeholder="$t('PLACEHOLDERS.goalsAr')"
             v-model.trim="data.goalsAr"
             required
-          />
+          /> -->
           <!-- End:: Ar Content Text Editor -->
 
           <!-- Start:: En Content Text Editor -->
-          <base-text-editor
+          <!-- <base-text-editor
             col="6"
             :placeholder="$t('PLACEHOLDERS.goalsEn')"
             v-model.trim="data.goalsEn"
             required
-          />
+          /> -->
           <!-- Start:: En Content Text Editor -->
 
           <!-- Start:: Ar Content Text Editor -->
-          <base-text-editor
+          <!-- <base-text-editor
             col="6"
             :placeholder="$t('PLACEHOLDERS.visionAr')"
             v-model.trim="data.visionAr"
             required
-          />
+          /> -->
           <!-- End:: Ar Content Text Editor -->
 
           <!-- Start:: En Content Text Editor -->
-          <base-text-editor
+          <!-- <base-text-editor
             col="6"
             :placeholder="$t('PLACEHOLDERS.visionEn')"
             v-model.trim="data.visionEn"
             required
-          />
+          /> -->
           <!-- Start:: En Content Text Editor -->
 
           <!-- Start:: Ar Content Text Editor -->
-          <base-text-editor
+          <!-- <base-text-editor
             col="6"
             :placeholder="$t('PLACEHOLDERS.messageAr')"
             v-model.trim="data.messageAr"
             required
-          />
+          /> -->
           <!-- End:: Ar Content Text Editor -->
 
           <!-- Start:: En Content Text Editor -->
-          <base-text-editor
+          <!-- <base-text-editor
             col="6"
             :placeholder="$t('PLACEHOLDERS.messageEn')"
             v-model.trim="data.messageEn"
             required
-          />
+          /> -->
           <!-- Start:: En Content Text Editor -->
 
           <!-- Start:: Submit Button Wrapper -->
@@ -142,16 +142,16 @@ export default {
           url: `settings?key=about-app`,
         });
         // Start:: Set Data
-        this.data.contentAr = res.data.data[0].value?.ar;
-        this.data.contentEn = res.data.data[0].value?.en;
-        this.data.goalsAr = res.data.data[0].value?.mission?.ar;
-        this.data.goalsEn = res.data.data[0].value?.mission?.en;
+        this.data.contentAr = res.data.data.data[0].value?.ar;
+        this.data.contentEn = res.data.data.data[0].value?.en;
+        // this.data.goalsAr = res.data.data[0].value?.mission?.ar;
+        // this.data.goalsEn = res.data.data[0].value?.mission?.en;
 
-        this.data.visionAr = res.data.data[0].value?.vision?.ar;
-        this.data.visionEn = res.data.data[0].value?.vision?.en;
+        // this.data.visionAr = res.data.data[0].value?.vision?.ar;
+        // this.data.visionEn = res.data.data[0].value?.vision?.en;
 
-        this.data.messageAr = res.data.data[0].value?.message?.ar;
-        this.data.messageEn = res.data.data[0].value?.message?.en;
+        // this.data.messageAr = res.data.data[0].value?.message?.ar;
+        // this.data.messageEn = res.data.data[0].value?.message?.en;
         // End:: Set Data
       } catch (error) {
         console.log(error.response.data.message);
@@ -191,12 +191,12 @@ export default {
       REQUEST_DATA.append("value[title][en]", "About App");
       REQUEST_DATA.append("value[ar]", this.data.contentAr);
       REQUEST_DATA.append("value[en]", this.data.contentEn);
-      REQUEST_DATA.append("value[mission][ar]", this.data.goalsAr);
-      REQUEST_DATA.append("value[mission][en]", this.data.goalsEn);
-      REQUEST_DATA.append("value[vision][ar]", this.data.visionAr);
-      REQUEST_DATA.append("value[vision][en]", this.data.visionEn);
-      REQUEST_DATA.append("value[message][ar]", this.data.messageAr);
-      REQUEST_DATA.append("value[message][en]", this.data.messageEn);
+      // REQUEST_DATA.append("value[mission][ar]", this.data.goalsAr);
+      // REQUEST_DATA.append("value[mission][en]", this.data.goalsEn);
+      // REQUEST_DATA.append("value[vision][ar]", this.data.visionAr);
+      // REQUEST_DATA.append("value[vision][en]", this.data.visionEn);
+      // REQUEST_DATA.append("value[message][ar]", this.data.messageAr);
+      // REQUEST_DATA.append("value[message][en]", this.data.messageEn);
       // REQUEST_DATA.append("_method", "PUT");
 
       try {

@@ -78,11 +78,11 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: `settings?key=app-privacy`,
+          url: `settings?key=privacy-policy`,
         });
         // Start:: Set Data
-        this.data.contentAr = res.data.data[0].value.ar;
-        this.data.contentEn = res.data.data[0].value.en;
+        this.data.contentAr = res.data.data.data[0].value.ar;
+        this.data.contentEn = res.data.data.data[0].value.en;
         // End:: Set Data
       } catch (error) {
         console.log(error.response.data.message);
@@ -117,7 +117,7 @@ export default {
     async submitForm() {
       const REQUEST_DATA = new FormData();
       // Start:: Append Request Data
-      REQUEST_DATA.append("key", "app-privacy");
+      REQUEST_DATA.append("key", "privacy-policy");
       REQUEST_DATA.append("value[ar]", this.data.contentAr);
       REQUEST_DATA.append("value[en]", this.data.contentEn);
       // REQUEST_DATA.append("_method", "PUT");
@@ -125,7 +125,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `settings?key=app-privacy`,
+          url: `settings?key=privacy-policy`,
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;

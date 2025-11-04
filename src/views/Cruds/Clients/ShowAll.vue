@@ -797,7 +797,7 @@ export default {
     async DownloadExcel() {
       await this.$axios({
         method: "GET",
-        url: "clients/export-excel",
+        url: "clients/export",
         params: {
           page: this.paginations.current_page,
           name: this.filterOptions.name,

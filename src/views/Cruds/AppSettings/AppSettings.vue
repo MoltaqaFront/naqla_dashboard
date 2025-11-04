@@ -20,7 +20,7 @@
             type="number"
             col="6"
             :placeholder="$t('PLACEHOLDERS.vat_rate')"
-            v-model.trim="data.package_tax_percentage"
+            v-model.trim="data.tax"
             step="0.01"
             min="0"
             max="100"
@@ -30,8 +30,8 @@
           <base-input
             type="number"
             col="6"
-            :placeholder="$t('PLACEHOLDERS.financial_liability_ratio')"
-            v-model.trim="data.app_commission_rate"
+            :placeholder="$t('PLACEHOLDERS.price_per_km')"
+            v-model.trim="data.price_per_km"
             step="0.01"
             min="0"
             max="100"
@@ -41,8 +41,8 @@
           <base-input
             type="number"
             col="6"
-            :placeholder="$t('PLACEHOLDERS.documentation_amount')"
-            v-model.trim="data.cancellation_time_limit_hours"
+            :placeholder="$t('PLACEHOLDERS.driver_order_percentage')"
+            v-model.trim="data.driver_order_percentage"
             min="0"
           />
 
@@ -76,6 +76,10 @@ export default {
     return {
       isWaitingRequest: false,
       data: {
+        tax: null,
+        price_per_km: null,
+        driver_order_percentage: null,
+
         package_tax_percentage: null,
         documentation_amount: null,
         financial_liability_ratio: null,
@@ -86,16 +90,13 @@ export default {
   methods: {
     async getDataToEdit() {
       try {
-        let res = await this.$axios.get("settings?key=general");
-        const settings = res.data.data[0].value;
+        let res = await this.$axios.get("settings?key=general-settings");
+        const settings = res.data.data.data[0].value;
 
         // Map the response data to component data
-        this.data.package_tax_percentage = settings.package_tax_percentage;
-        this.data.documentation_amount = settings.documentation_amount;
-        this.data.financial_liability_ratio =
-          settings.financial_liability_ratio;
-        this.data.verified_financial_liability_ratio =
-          settings.verified_financial_liability_ratio;
+        this.data.tax = settings.tax;
+        this.data.price_per_km = settings.price_per_km;
+        this.data.driver_order_percentage = settings.driver_order_percentage;
       } catch (error) {
         console.error(error.response.data.message);
       }
@@ -103,28 +104,22 @@ export default {
     async submitForm() {
       this.isWaitingRequest = true;
       const REQUEST_DATA = new FormData();
-      REQUEST_DATA.append("key", "general");
+      REQUEST_DATA.append("key", "general-settings");
 
       // Append all form data
-      REQUEST_DATA.append(
-        "value[package_tax_percentage]",
-        this.data.package_tax_percentage
-      );
-      REQUEST_DATA.append(
-        "value[documentation_amount]",
-        this.data.documentation_amount
-      );
+      REQUEST_DATA.append("value[tax]", this.data.tax);
+      REQUEST_DATA.append("value[price_per_km]", this.data.price_per_km);
       REQUEST_DATA.append(
         "value[financial_liability_ratio]",
         this.data.financial_liability_ratio
       );
       REQUEST_DATA.append(
-        "value[verified_financial_liability_ratio]",
-        this.data.verified_financial_liability_ratio
+        "value[driver_order_percentage]",
+        this.data.driver_order_percentage
       );
 
       try {
-        await this.$axios.post("settings", REQUEST_DATA);
+        await this.$axios.post("settings?key=general-settings", REQUEST_DATA);
         this.isWaitingRequest = false;
         this.$message.success(this.$t("MESSAGES.savedSuccessfully"));
         this.getDataToEdit();

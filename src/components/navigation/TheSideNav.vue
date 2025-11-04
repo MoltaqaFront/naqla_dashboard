@@ -283,6 +283,28 @@
           </span>
         </router-link>
       </div>
+
+      <!-- Start:: Drivers Route -->
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('drivers index', 'drivers')"
+      >
+        <router-link to="/drivers/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/mechanic.png"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.drivers") }}
+          </span>
+        </router-link>
+      </div>
+      <!-- End:: Drivers Route -->
       <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
@@ -1314,7 +1336,7 @@
       <!-- End:: FAQ Route -->
 
       <!-- Start:: app settings Route -->
-      <!-- <div
+      <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
         v-if="$can('settings index', 'settings')"
@@ -1332,7 +1354,7 @@
             {{ $t("SIDENAV.settings.general_app") }}
           </span>
         </router-link>
-      </div> -->
+      </div>
       <!-- End:: app settings Route -->
       <!-- Start:: Side Nav Routes -->
       <div class="side_routes_wrapper">
@@ -1626,12 +1648,12 @@ export default {
               route: "/app-content/delete-account",
               hasPermission: this.$can("settings index", "settings"),
             },
-            {
-              key: "onboarding",
-              title: this.$t("PLACEHOLDERS.on_boarding"),
-              route: "/app-content/OnBoarding",
-              hasPermission: this.$can("settings index", "settings"),
-            },
+            // {
+            //   key: "onboarding",
+            //   title: this.$t("PLACEHOLDERS.on_boarding"),
+            //   route: "/app-content/OnBoarding",
+            //   hasPermission: this.$can("settings index", "settings"),
+            // },
           ],
         },
       ],
@@ -1670,6 +1692,12 @@ export default {
           ),
           children: [
             {
+              key: "providers_list",
+              title: this.$t("PLACEHOLDERS.vehicles"),
+              route: "/vehicles/all",
+              hasPermission: this.$can("vehicles index", "vehicles"),
+            },
+            {
               key: "providers_join",
               title: this.$t("PLACEHOLDERS.delegate_join_requests"),
               route: "/delegate-requests/all",
@@ -1677,12 +1705,6 @@ export default {
                 "delegaterequests index",
                 "delegaterequests"
               ),
-            },
-            {
-              key: "providers_list",
-              title: this.$t("PLACEHOLDERS.teachers"),
-              route: "/teachers/all",
-              hasPermission: this.$can("teachers index", "teachers"),
             },
           ],
         },

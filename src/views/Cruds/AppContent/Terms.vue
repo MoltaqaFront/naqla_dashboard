@@ -81,8 +81,8 @@ export default {
           url: `settings?key=terms-and-conditions`,
         });
         // Start:: Set Data
-        this.data.contentAr = res.data.data[0].value.ar;
-        this.data.contentEn = res.data.data[0].value.en;
+        this.data.contentAr = res.data.data.data[0].value.ar;
+        this.data.contentEn = res.data.data.data[0].value.en;
 
         // End:: Set Data
       } catch (error) {

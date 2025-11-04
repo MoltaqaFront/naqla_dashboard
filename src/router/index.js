@@ -145,6 +145,20 @@ import CreateVehicleTypes from "../views/Cruds/VehicleTypes/Create.vue";
 import ShowVehicleTypes from "../views/Cruds/VehicleTypes/Show.vue";
 import EditVehicleTypes from "../views/Cruds/VehicleTypes/Edit.vue";
 // ============== End:: VehicleTypes Routes
+// ============== Start:: Vehicles Routes
+import VehiclesHome from "../views/Cruds/Vehicles/Home.vue";
+import AllVehicles from "../views/Cruds/Vehicles/ShowAll.vue";
+import CreateVehicles from "../views/Cruds/Vehicles/Create.vue";
+import ShowVehicles from "../views/Cruds/Vehicles/Show.vue";
+import EditVehicles from "../views/Cruds/Vehicles/Edit.vue";
+// ============== End:: Vehicles Routes
+// ============== Start:: Drivers Routes
+import DriversHome from "../views/Cruds/Drivers/Home.vue";
+import AllDrivers from "../views/Cruds/Drivers/ShowAll.vue";
+import CreateDrivers from "../views/Cruds/Drivers/Create.vue";
+import ShowDrivers from "../views/Cruds/Drivers/Show.vue";
+import EditDrivers from "../views/Cruds/Drivers/Edit.vue";
+// ============== End:: Drivers Routes
 // ============== Start:: vehiclebrands Routes
 import vehiclebrandsHome from "../views/Cruds/vehiclebrands/Home.vue";
 import Allvehiclebrands from "../views/Cruds/vehiclebrands/ShowAll.vue";
@@ -1360,6 +1374,130 @@ const routes = [
         ],
       },
       // End:: VehicleTypes Config
+      // Start:: Vehicles Config
+      {
+        path: "/vehicles",
+        name: "Vehicles",
+        component: VehiclesHome,
+        meta: {
+          middleware: [auth],
+        },
+        children: [
+          {
+            path: "all",
+            name: "AllVehicles",
+            component: AllVehicles,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "vehicles index",
+                subject: "vehicles",
+              },
+            },
+          },
+          {
+            path: "create",
+            name: "CreateVehicles",
+            component: CreateVehicles,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "vehicles create",
+                subject: "vehicles",
+              },
+            },
+          },
+          {
+            path: "edit/:id",
+            name: "EditVehicles",
+            component: EditVehicles,
+            props: true,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "vehicles edit",
+                subject: "vehicles",
+              },
+            },
+          },
+          {
+            path: "show/:id",
+            name: "ShowVehicles",
+            component: ShowVehicles,
+            props: true,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "vehicles show",
+                subject: "vehicles",
+              },
+            },
+          },
+        ],
+      },
+      // End:: Vehicles Config
+      // Start:: Drivers Config
+      {
+        path: "/drivers",
+        name: "Drivers",
+        component: DriversHome,
+        meta: {
+          middleware: [auth],
+        },
+        children: [
+          {
+            path: "all",
+            name: "AllDrivers",
+            component: AllDrivers,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "drivers index",
+                subject: "drivers",
+              },
+            },
+          },
+          {
+            path: "create",
+            name: "CreateDrivers",
+            component: CreateDrivers,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "drivers create",
+                subject: "drivers",
+              },
+            },
+          },
+          {
+            path: "edit/:id",
+            name: "EditDrivers",
+            component: EditDrivers,
+            props: true,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "drivers edit",
+                subject: "drivers",
+              },
+            },
+          },
+          {
+            path: "show/:id",
+            name: "ShowDrivers",
+            component: ShowDrivers,
+            props: true,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "drivers show",
+                subject: "drivers",
+              },
+            },
+          },
+        ],
+      },
+      // End:: Drivers Config
       // Start:: vehiclebrands Config
       {
         path: "/vehiclebrands",

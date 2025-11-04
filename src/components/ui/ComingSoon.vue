@@ -2,7 +2,6 @@
   <!--  v-if="$can('mostafa delete', 'mostafa')" -->
   <div class="coming_soon_container" dir="ltr">
     <h3>COMING SOON</h3>
-    <p>hi ziad ya assl</p>
     <div class="bar">
       <div class="progress"></div>
     </div>
