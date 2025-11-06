@@ -114,14 +114,14 @@
           </button>
         </div>
 
-        <div
+        <!-- <div
           class="title_route_wrapper"
           v-if="$can('drivers create', 'drivers')"
         >
           <router-link to="/drivers/create">
             {{ $t("PLACEHOLDERS.addDrivers") }}
           </router-link>
-        </div>
+        </div> -->
       </div>
 
       <!-- Data Table -->

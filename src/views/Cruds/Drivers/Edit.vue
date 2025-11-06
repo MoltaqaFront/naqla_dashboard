@@ -40,13 +40,13 @@
           />
 
           <!-- Birth Date -->
-          <base-picker-input
+          <!-- <base-picker-input
             col="6"
             type="date"
             :placeholder="$t('PLACEHOLDERS.birthDate')"
             v-model.trim="data.birth_date"
             required
-          />
+          /> -->
 
           <!-- Vehicle Selection -->
           <base-select-input
@@ -268,14 +268,14 @@ export default {
         this.data.birth_date = driver.birth_date;
         this.data.created_at = driver.created_at;
         this.data.is_active = driver.is_active;
-        this.data.vehicle_id = driver.vehicle_id;
+        this.data.vehicle_id = driver.vehicle;
         this.data.bank_name = driver.bank_name;
         this.data.account_holder_name = driver.account_holder_name;
         this.data.account_number = driver.account_number;
         this.data.iban_number = driver.iban_number;
-        this.data.id_image.path = driver.id_image;
+        this.data.id_image.path = driver.identity_image;
         this.data.license_image.path = driver.license_image;
-        this.data.profile_image.path = driver.profile_image;
+        this.data.profile_image.path = driver.avatar;
       } catch (error) {
         this.loading = false;
         console.log(error?.response?.data?.message);
