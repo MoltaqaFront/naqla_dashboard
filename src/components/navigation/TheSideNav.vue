@@ -284,13 +284,13 @@
         </router-link>
       </div>
 
-      <!-- Start:: Drivers Route -->
+      <!-- Start:: Vehicles Route -->
       <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
-        v-if="$can('drivers index', 'drivers')"
+        v-if="$can('vehicles index', 'vehicles')"
       >
-        <router-link to="/drivers/all">
+        <router-link to="/vehicles/all">
           <span class="route_icon">
             <img
               src="@/assets/media/icons/ui_icons/mechanic.png"
@@ -300,11 +300,11 @@
             />
           </span>
           <span class="route_text">
-            {{ $t("PLACEHOLDERS.drivers") }}
+            {{ $t("PLACEHOLDERS.vehicles") }}
           </span>
         </router-link>
       </div>
-      <!-- End:: Drivers Route -->
+      <!-- End:: Vehicles Route -->
       <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
@@ -1692,10 +1692,10 @@ export default {
           ),
           children: [
             {
-              key: "providers_list",
-              title: this.$t("PLACEHOLDERS.vehicles"),
-              route: "/vehicles/all",
-              hasPermission: this.$can("vehicles index", "vehicles"),
+              key: "drivers_list",
+              title: this.$t("PLACEHOLDERS.drivers"),
+              route: "/drivers/all",
+              hasPermission: this.$can("drivers index", "drivers"),
             },
             {
               key: "providers_join",

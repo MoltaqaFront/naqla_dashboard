@@ -56,7 +56,22 @@
                 class="col-md-6"
               >
                 <div class="permission_card_wrapper">
-                  <p class="card_title">{{ permission.name }}</p>
+                  <div
+                    class="d-flex align-center justify-space-between"
+                    style="padding: 0 20px"
+                  >
+                    <p class="card_title">{{ permission.name }}</p>
+                    <div class="input_wrapper switch_wrapper my-0">
+                      <v-switch
+                        color="blue"
+                        :label="$t('PLACEHOLDERS.choose_all')"
+                        :input-value="isAllCheckedForPermission(permission)"
+                        @change="toggleAllForPermission(permission, $event)"
+                        hide-details
+                        dense
+                      ></v-switch>
+                    </div>
+                  </div>
                   <div class="card_body">
                     <div class="row">
                       <div
@@ -72,6 +87,7 @@
                             :value="item.id"
                             v-model="data.permissions"
                             hide-details
+                            @change="handleSwitchChange(permission, item)"
                           ></v-switch>
                         </div>
                       </div>
@@ -190,6 +206,52 @@ export default {
           }
         });
       });
+    },
+    // Check if all switches in a specific permission are checked
+    isAllCheckedForPermission(permission) {
+      return Object.values(permission.controls).every((item) => {
+        return this.data.permissions.includes(item.id);
+      });
+    },
+
+    // Toggle all switches for a specific permission
+    toggleAllForPermission(permission, isChecked) {
+      Object.values(permission.controls).forEach((item) => {
+        const index = this.data.permissions.indexOf(item.id);
+        if (isChecked) {
+          // Check all switches in this permission
+          if (index === -1) {
+            this.data.permissions.push(item.id);
+          }
+        } else {
+          // Uncheck all switches in this permission
+          if (index !== -1) {
+            this.data.permissions.splice(index, 1);
+          }
+        }
+      });
+
+      // Force Vue to update the UI
+      this.$forceUpdate();
+    },
+
+    handleSwitchChange(permission, item) {
+      const indexPermission = permission.controls.find(
+        (p) => p.key === "index"
+      );
+
+      // Auto-enable index permission when any other permission is selected
+      if (item && item.key !== "index") {
+        if (
+          this.data.permissions.includes(item.id) &&
+          !this.data.permissions.includes(indexPermission?.id)
+        ) {
+          this.data.permissions.push(indexPermission.id);
+        }
+      }
+
+      // Force reactivity update
+      this.$forceUpdate();
     },
     onCopy(event) {
       event.preventDefault();
