@@ -36,15 +36,12 @@
           <!-- End:: User Name Input -->
 
           <!-- Start:: Phone Input -->
-          <base-phone-input
+          <base-input
             col="4"
+            type="tel"
             required
             v-model="data.phone"
-            @dialCode="dialCode"
-            @isoCode="isoCode"
             :placeholder="$t('PLACEHOLDERS.phone')"
-            :defaultCountry="data.iso_code"
-            :key="key"
           />
           <!-- End:: Phone Input -->
 
