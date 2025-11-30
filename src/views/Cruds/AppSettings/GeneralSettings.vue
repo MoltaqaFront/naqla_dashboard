@@ -106,12 +106,12 @@
             v-model.trim="data.twitter_link"
           />
           <!-- End:: Tax Percentage Input -->
-          <base-input
+          <!-- <base-input
             col="6"
             type="text"
             :placeholder="$t('PLACEHOLDERS.telegram')"
             v-model.trim="data.telegram"
-          />
+          /> -->
 
           <!-- Start:: Tax Percentage Input -->
           <!-- <base-input
