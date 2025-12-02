@@ -187,7 +187,7 @@
         </template>
 
         <template v-slot:[`item.mobile`]="{ item }">
-          {{ item.country_code + item.mobile }}
+          {{  item.mobile }}
         </template>
 
         <template v-slot:[`item.has_verification`]="{ item }">
