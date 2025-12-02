@@ -21,7 +21,7 @@
             <div class="row justify-content-center align-items-center w-100">
               <!-- Name Search -->
               <base-input
-                col="4"
+                col="3"
                 type="text"
                 :placeholder="$t('PLACEHOLDERS.driverName')"
                 v-model.trim="filterOptions.name"
@@ -29,7 +29,7 @@
 
               <!-- Mobile Search -->
               <base-input
-                col="4"
+                col="3"
                 type="text"
                 :placeholder="$t('PLACEHOLDERS.mobileNumber')"
                 v-model.trim="filterOptions.mobile"
@@ -37,7 +37,7 @@
 
               <!-- Email Search -->
               <base-input
-                col="4"
+                col="3"
                 type="text"
                 :placeholder="$t('PLACEHOLDERS.email')"
                 v-model.trim="filterOptions.email"
@@ -45,7 +45,7 @@
 
               <!-- Status Filter -->
               <base-select-input
-                col="4"
+                col="3"
                 :optionsList="activeStatuses"
                 :placeholder="$t('PLACEHOLDERS.status')"
                 v-model="filterOptions.is_active"
@@ -53,7 +53,7 @@
 
               <!-- Join Date From -->
               <base-picker-input
-                col="4"
+                col="3"
                 type="date"
                 :placeholder="$t('PLACEHOLDERS.fromDate')"
                 v-model.trim="filterOptions.from_date"
@@ -61,7 +61,7 @@
 
               <!-- Join Date To -->
               <base-picker-input
-                col="4"
+                col="3"
                 type="date"
                 :placeholder="$t('PLACEHOLDERS.toDate')"
                 v-model.trim="filterOptions.to_date"
