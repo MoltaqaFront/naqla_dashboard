@@ -1,5 +1,6 @@
 <template>
   <div class="crud_form_wrapper">
+    <!-- Start:: Title -->
     <div class="form_title_wrapper">
       <h4>{{ $t("PLACEHOLDERS.showDriver") }}</h4>
     </div>
@@ -8,172 +9,130 @@
         <i class="fas fa-backward"></i>
       </v-btn>
     </div>
+    <!-- End:: Title -->
 
+    <!-- Start:: Single Step Form Content -->
     <div class="single_step_form_content_wrapper">
-      <div class="row">
-        <!-- Driver Information -->
-        <div class="col-12 mb-4">
-          <h5>{{ $t("PLACEHOLDERS.driverInformation") }}</h5>
-        </div>
-
-        <!-- Driver Name -->
-        <base-input
-          col="4"
-          type="text"
-          :placeholder="$t('PLACEHOLDERS.driverName')"
-          v-model.trim="data.name"
-          disabled
-        />
-
-        <!-- Email -->
-        <base-input
-          col="4"
-          type="email"
-          :placeholder="$t('PLACEHOLDERS.email')"
-          v-model.trim="data.email"
-          disabled
-        />
-
-        <!-- Mobile -->
-        <base-input
-          col="4"
-          type="text"
-          :placeholder="$t('PLACEHOLDERS.mobileNumber')"
-          v-model.trim="data.mobile"
-          disabled
-        />
-
-        <!-- Age (calculated from birth date) -->
-        <base-input
-          col="4"
-          type="text"
-          :placeholder="$t('PLACEHOLDERS.age')"
-          :value="calculatedAge"
-          disabled
-        />
-
-        <!-- Join Date -->
-        <base-picker-input
-          col="4"
-          type="date"
-          :placeholder="$t('PLACEHOLDERS.joinDate')"
-          v-model.trim="data.created_at"
-          disabled
-        />
-
-        <!-- Status -->
-        <div class="input_wrapper switch_wrapper my-5 col-4">
-          <v-switch
-            color="green"
-            :label="
-              data.is_active
-                ? $t('PLACEHOLDERS.active')
-                : $t('PLACEHOLDERS.notActive')
-            "
-            v-model="data.is_active"
-            hide-details
+      <form @submit.prevent="validateFormInputs">
+        <div class="row">
+          <!-- Start:: Driver Name Input -->
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.driverName')"
+            v-model.trim="data.name"
             disabled
-          ></v-switch>
-        </div>
+          />
 
-        <!-- Vehicle Information -->
-        <base-input
-          col="4"
-          type="text"
-          :placeholder="$t('PLACEHOLDERS.assignedVehicle')"
-          :value="data.vehicle_name"
-          disabled
-        />
+          <!-- Start:: Email Input -->
+          <base-input
+            col="6"
+            type="email"
+            :placeholder="$t('PLACEHOLDERS.email')"
+            v-model.trim="data.email"
+            disabled
+          />
+          <!-- End:: Email Input -->
 
-        <!-- Banking Information Section -->
-        <div class="col-12 mb-4 mt-4">
-          <h5>{{ $t("PLACEHOLDERS.bankingInformation") }}</h5>
-        </div>
+          <!-- Start:: Mobile Input -->
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.mobileNumber')"
+            v-model.trim="data.mobile"
+            disabled
+          />
+          <!-- End:: Mobile Input -->
 
-        <!-- Bank Name -->
-        <base-input
-          col="3"
-          type="text"
-          :placeholder="$t('PLACEHOLDERS.bankName')"
-          v-model.trim="data.bank_name"
-          disabled
-        />
+          <!-- Start:: Age Input -->
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.age')"
+            :value="calculatedAge"
+            disabled
+          />
+          <!-- End:: Age Input -->
 
-        <!-- Account Holder Name -->
-        <base-input
-          col="3"
-          type="text"
-          :placeholder="$t('PLACEHOLDERS.accountHolderName')"
-          v-model.trim="data.account_holder_name"
-          disabled
-        />
+          <!-- Start:: Join Date Input -->
+          <base-picker-input
+            col="6"
+            type="date"
+            :placeholder="$t('PLACEHOLDERS.joinDate')"
+            v-model.trim="data.created_at"
+            disabled
+          />
+          <!-- End:: Join Date Input -->
 
-        <!-- Account Number -->
-        <base-input
-          col="3"
-          type="text"
-          :placeholder="$t('PLACEHOLDERS.accountNumber')"
-          v-model.trim="data.account_number"
-          disabled
-        />
+          <!-- Start:: Vehicle Input -->
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.assignedVehicle')"
+            :value="data.vehicle_name"
+            disabled
+          />
+          <!-- End:: Vehicle Input -->
 
-        <!-- IBAN Number -->
-        <base-input
-          col="3"
-          type="text"
-          :placeholder="$t('PLACEHOLDERS.ibanNumber')"
-          v-model.trim="data.iban_number"
-          disabled
-        />
+          <!-- Start:: Bank Name Input -->
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.bankName')"
+            v-model.trim="data.bank_name"
+            disabled
+          />
+          <!-- End:: Bank Name Input -->
 
-        <!-- Images Section -->
-        <div class="col-12 mb-4 mt-4">
-          <h5>{{ $t("PLACEHOLDERS.driverImages") }}</h5>
-        </div>
+          <!-- Start:: Account Holder Name Input -->
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.accountHolderName')"
+            v-model.trim="data.account_holder_name"
+            disabled
+          />
+          <!-- End:: Account Holder Name Input -->
 
-        <!-- Profile Image -->
-        <div class="col-4" v-if="data.profile_image.path">
-          <div class="image_preview_wrapper">
-            <label>{{ $t("PLACEHOLDERS.profileImage") }}</label>
-            <div class="image_container">
-              <img
-                :src="data.profile_image.path"
-                alt="Profile Image"
-                class="preview_image"
-              />
-            </div>
+          <!-- Start:: Account Number Input -->
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.accountNumber')"
+            v-model.trim="data.account_number"
+            disabled
+          />
+          <!-- End:: Account Number Input -->
+
+          <!-- Start:: IBAN Number Input -->
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.ibanNumber')"
+            v-model.trim="data.iban_number"
+            disabled
+          />
+          <!-- End:: IBAN Number Input -->
+
+          <!-- Start:: Deactivate Switch Input -->
+          <div class="input_wrapper switch_wrapper my-5 col-6">
+            <v-switch
+              color="green"
+              :label="
+                data.is_active
+                  ? $t('PLACEHOLDERS.active')
+                  : $t('PLACEHOLDERS.notActive')
+              "
+              v-model="data.is_active"
+              hide-details
+              disabled
+            ></v-switch>
           </div>
+          <!-- End:: Deactivate Switch Input -->
         </div>
-
-        <!-- ID Image -->
-        <div class="col-4" v-if="data.id_image.path">
-          <div class="image_preview_wrapper">
-            <label>{{ $t("PLACEHOLDERS.idImage") }}</label>
-            <div class="image_container">
-              <img
-                :src="data.id_image.path"
-                alt="ID Image"
-                class="preview_image"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- License Image -->
-        <div class="col-4" v-if="data.license_image.path">
-          <div class="image_preview_wrapper">
-            <label>{{ $t("PLACEHOLDERS.licenseImage") }}</label>
-            <div class="image_container">
-              <img
-                :src="data.license_image.path"
-                alt="License Image"
-                class="preview_image"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      </form>
     </div>
+    <!-- END:: Single Step Form Content -->
   </div>
 </template>
 
@@ -264,30 +223,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.image_preview_wrapper {
-  margin-bottom: 20px;
-}
-
-.image_preview_wrapper label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
-.image_container {
-  width: 100%;
-  max-width: 200px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.preview_image {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  display: block;
-}
-</style>

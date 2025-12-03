@@ -1806,7 +1806,7 @@
     "deliveryPrice": "سعر التوصيل",
     "export_pdf": "تصدير ك بي دي إف",
     "export_excel": "تصدير ك اكسيل",
-    "drivers": "المندوبين",
+    "drivers": "المناديب",
     "driverDailyOrdersAmount": "عدد طلبات المندوب فى اليوم",
     "appointmentOrdersAmount": "عدد الطلبات على كل موعد",
     "transferringTime": "الوقت التنقل (بالدقيقة)",
@@ -1960,7 +1960,7 @@
 
     "year_made": "سنة الصنع",
     "car_plate": "رقم لوحة السيارة",
-    "drivers_join": "طلبات انضمام المندوبين",
+    "drivers_join": "طلبات انضمام المناديب",
     "reason_reject": "سبب الرفض",
     "App_Revenue": "ربح التطبيق",
     "order_total": "إجمالي الطلب",
