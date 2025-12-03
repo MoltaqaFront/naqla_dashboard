@@ -203,7 +203,7 @@
       <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
-        v-if="$can('clients index', 'clients')"
+        v-if="$can('users index', 'users')"
       >
         <router-link to="/Clients/all">
           <span class="route_icon">

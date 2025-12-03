@@ -2317,8 +2317,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "clients index",
-                subject: "clients",
+                action: "users index",
+                subject: "users",
               },
             },
           },
@@ -2331,8 +2331,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "clients show",
-                subject: "clients",
+                action: "users show",
+                subject: "users",
               },
             },
           },

@@ -252,7 +252,7 @@
 
             <a-tooltip
               placement="bottom"
-              v-if="$can('clients edit', 'clients') && item?.id !== 1"
+              v-if="$can('users edit', 'users') && item?.id !== 1"
             >
               <template slot="title">
                 <span>{{ $t("BUTTONS.edit") }}</span>
@@ -263,7 +263,7 @@
             </a-tooltip>
             <a-tooltip
               placement="bottom"
-              v-if="$can('clients delete', 'clients')"
+              v-if="$can('users delete', 'users')"
               :class="{ disable_parent: item.can_delete === true }"
             >
               <template slot="title">
