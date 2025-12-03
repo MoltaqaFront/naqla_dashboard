@@ -30,7 +30,9 @@
           <base-input
             type="number"
             col="6"
-            :placeholder="$t('PLACEHOLDERS.price_per_km')"
+            :placeholder="
+              $t('PLACEHOLDERS.price_per_km') + ` (${$t('PLACEHOLDERS.riyal')})`
+            "
             v-model.trim="data.price_per_km"
             step="0.01"
             min="0"
@@ -41,7 +43,7 @@
           <base-input
             type="number"
             col="6"
-            :placeholder="$t('PLACEHOLDERS.driver_order_percentage')"
+            :placeholder="$t('PLACEHOLDERS.driver_order_percentage') + '(%)'"
             v-model.trim="data.driver_order_percentage"
             min="0"
           />
