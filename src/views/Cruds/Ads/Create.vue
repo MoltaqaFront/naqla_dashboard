@@ -235,7 +235,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `advertisements`,
+          url: `banners`,
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;

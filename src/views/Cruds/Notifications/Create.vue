@@ -94,6 +94,18 @@
           />
           <!-- End:: Clients Type Input -->
 
+          <!-- Start:: Drivers Selection Input -->
+          <base-select-input
+            v-if="data.drivers && data.receiverType.value === 'driver'"
+            col="6"
+            :optionsList="data.drivers"
+            :placeholder="$t('PLACEHOLDERS.drivers')"
+            v-model="data.driver"
+            required
+            multiple
+          />
+          <!-- End:: Drivers Selection Input -->
+
           <!-- Start:: Submit Button Wrapper -->
           <div class="btn_wrapper">
             <base-button
@@ -130,11 +142,26 @@ export default {
       return [
         {
           id: 1,
-          name: this.$t("PLACEHOLDERS.clients"),
-          value: "client",
+          name: this.$t("PLACEHOLDERS.allClients"),
+          value: "allClients",
         },
         {
           id: 2,
+          name: this.$t("PLACEHOLDERS.allDrivers"),
+          value: "allDrivers",
+        },
+        {
+          id: 3,
+          name: this.$t("PLACEHOLDERS.specificClients"),
+          value: "client",
+        },
+        {
+          id: 4,
+          name: this.$t("PLACEHOLDERS.specificDrivers"),
+          value: "driver",
+        },
+        {
+          id: 5,
           name: this.$t("PLACEHOLDERS.all"),
           value: "all",
         },
@@ -157,8 +184,10 @@ export default {
         },
         clients: [],
         providers: [],
+        drivers: [],
         client: [],
         provider: [],
+        driver: [],
         titleAr: null,
         titleEn: null,
         contentAr: null,
@@ -197,7 +226,7 @@ export default {
           url: `clients?page=0&limit=0&is_active=1`,
         });
 
-        this.data.clients = res.data.data;
+        this.data.clients = res.data.data.data;
       } catch (error) {
         console.log(error.response.data.message);
       }
@@ -212,6 +241,18 @@ export default {
         this.data.providers = res.data.data;
       } catch (error) {
         console.log(error.response.data.message);
+      }
+    },
+
+    async getDrivers() {
+      try {
+        let res = await this.$axios({
+          method: "GET",
+          url: `drivers?page=0&limit=0`,
+        });
+        this.data.drivers = res.data.data?.data || [];
+      } catch (error) {
+        console.log(error.response?.data?.message || error.message);
       }
     },
 
@@ -267,19 +308,31 @@ export default {
     async submitForm() {
       const REQUEST_DATA = new FormData();
       // Start:: Append Request Data
-      if (this.data.receiverType.value == "client") {
-        REQUEST_DATA.append("to_type", "client");
+
+      // Handle different receiver types
+      if (this.data.receiverType.value === "allClients") {
+        REQUEST_DATA.append("to_type", "allClients");
+      } else if (this.data.receiverType.value === "allDrivers") {
+        REQUEST_DATA.append("to_type", "allDrivers");
+      } else if (this.data.receiverType.value === "all") {
+        REQUEST_DATA.append("to_type", "all");
+      } else if (this.data.receiverType.value === "client") {
+        // Specific clients - send users array
         this.data.client.forEach((element) => {
           REQUEST_DATA.append(`users[]`, element.id);
         });
-      } else if (this.data.receiverType.value == "all") {
-        REQUEST_DATA.append("to_type", "all");
+      } else if (this.data.receiverType.value === "driver") {
+        // Specific drivers - send users array
+        this.data.driver.forEach((element) => {
+          REQUEST_DATA.append(`users[]`, element.id);
+        });
       }
+
       REQUEST_DATA.append("title[ar]", this.data.titleAr);
       REQUEST_DATA.append("title[en]", this.data.titleEn);
       REQUEST_DATA.append("body[ar]", this.data.contentAr);
       REQUEST_DATA.append("body[en]", this.data.contentEn);
-      // Start:: Append Request Data
+      // End:: Append Request Data
 
       try {
         await this.$axios({
@@ -301,7 +354,8 @@ export default {
   created() {
     // Start:: Fire Methods
     this.getClients();
-    this.getProviders();
+    this.getDrivers();
+    // this.getProviders();
     // End:: Fire Methods
   },
 };

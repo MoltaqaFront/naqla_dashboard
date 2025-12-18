@@ -20,7 +20,7 @@
           >
           
             <!-- ********** Start:: Notification Button ********** -->
-            <!-- <v-tooltip bottom v-if="$can('notifications index', 'notifications')"> 
+            <v-tooltip bottom v-if="$can('notifications index', 'notifications')"> 
               <template v-slot:activator="{ on, attrs }">
                 <button v-bind="attrs" v-on="on">
                   <v-badge
@@ -37,7 +37,7 @@
                 </button>
               </template>
               <span class="toolTip">{{ $t("TOOLTIPS.notifications") }}</span>
-            </v-tooltip> -->
+            </v-tooltip>
             <!-- ********** End:: Notification Button ********** -->
 
             <div class="group">

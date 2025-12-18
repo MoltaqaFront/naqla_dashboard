@@ -10,10 +10,10 @@
       </div>
       <!--  =========== End:: Table Title =========== -->
 
-      <ComingSoon />
+      <!-- <ComingSoon /> -->
 
       <!--  =========== Start:: Data Table =========== -->
-      <!-- <div class="statics mt-4">
+      <div class="statics mt-4">
         <div class="row">
           <div
             class="col-lg-6 col-md-6 col-12"
@@ -22,32 +22,37 @@
           >
             <div class="box">
               <div class="icon">
+                <i v-if="key === 'total_clients'" class="fas fa-users"></i>
+
                 <i
-                  v-if="key === 'website_clients'"
-                  class="fas fa-users"
+                  v-else-if="key === 'total_drivers'"
+                  class="fas fa-user-tie"
                 ></i>
 
                 <i
-                  v-else-if="key === 'website_influencers'"
-                  class="fas fa-users"
+                  v-else-if="key === 'completed_orders'"
+                  class="fas fa-check-circle"
                 ></i>
-
               </div>
 
               <div class="info_box">
-                <span v-if="key === 'website_clients'">{{
-                  $t("PLACEHOLDERS.website_clients")
+                <span v-if="key === 'total_clients'">{{
+                  $t("PLACEHOLDERS.total_clients")
                 }}</span>
 
-                <span v-else-if="key === 'website_influencers'">{{
-                  $t("PLACEHOLDERS.website_influencers")
+                <span v-else-if="key === 'total_drivers'">{{
+                  $t("PLACEHOLDERS.total_drivers")
+                }}</span>
+
+                <span v-else-if="key === 'completed_orders'">{{
+                  $t("PLACEHOLDERS.completed_orders")
                 }}</span>
                 <p class="number_box">{{ value }}</p>
               </div>
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
       <!--  =========== End:: Data Table =========== -->
     </main>
     <!-- End:: Main Section -->
@@ -75,12 +80,13 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "statistic",
+          url: "statistics",
         });
 
         this.statics = {
-          website_clients: res.data.data.website_clients,
-          website_influencers: res.data.data.website_influencers,
+          total_clients: res.data.data.total_clients,
+          total_drivers: res.data.data.total_drivers,
+          completed_orders: res.data.data.completed_orders,
         };
       } catch (error) {
         this.loading = false;

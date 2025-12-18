@@ -87,7 +87,7 @@
 
         <div
           class="title_route_wrapper"
-          v-if="$can('advertisements create', 'advertisements')"
+          v-if="$can('banners create', 'banners')"
         >
           <router-link to="/ads/create">
             {{ $t("PLACEHOLDERS.add_ads") }}
@@ -157,16 +157,16 @@
         <!-- End:: Title -->
 
         <!-- Start:: Item Image -->
-        <template v-slot:[`item.media`]="{ item }">
+        <template v-slot:[`item.file`]="{ item }">
           <div class="table_image_wrapper">
-            <h6 class="text-danger" v-if="!item.media">
+            <h6 class="text-danger" v-if="!item.file">
               {{ $t("TABLES.noData") }}
             </h6>
 
             <button class="my-1" @click="showImageModal(item)" v-else>
               <video
-                v-if="item.media.endsWith('mp4')"
-                :src="item.media"
+                v-if="item.file.endsWith('mp4')"
+                :src="item.file"
                 width="80"
                 height="60"
                 class="rounded"
@@ -175,7 +175,7 @@
               <img
                 v-else
                 class="rounded"
-                :src="item.media"
+                :src="item.file"
                 width="60"
                 height="60"
               />
@@ -190,7 +190,7 @@
             class="activation"
             dir="ltr"
             style="z-index: 1"
-            v-if="$can('advertisements activate', 'advertisements')"
+            v-if="$can('banners activate', 'banners')"
           >
             <v-switch
               class="mt-2"
@@ -217,7 +217,7 @@
           <div class="actions">
             <a-tooltip
               placement="bottom"
-              v-if="$can('advertisements show', 'advertisements')"
+              v-if="$can('banners show', 'banners')"
             >
               <template slot="title">
                 <span>{{ $t("BUTTONS.show") }}</span>
@@ -229,7 +229,7 @@
 
             <a-tooltip
               placement="bottom"
-              v-if="$can('advertisements edit', 'advertisements')"
+              v-if="$can('banners edit', 'banners')"
               :class="{ disable_parent: item.can_edit === true }"
             >
               <template slot="title">
@@ -246,7 +246,7 @@
 
             <a-tooltip
               placement="bottom"
-              v-if="$can('advertisements delete', 'advertisements')"
+              v-if="$can('banners delete', 'banners')"
               :class="{ disable_parent: item.can_delete === true }"
             >
               <template slot="title">
@@ -406,7 +406,7 @@ export default {
         },
         {
           text: this.$t("PLACEHOLDERS.advertisement"),
-          value: "media",
+          value: "file",
           sortable: false,
           align: "center",
         },
@@ -512,19 +512,19 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "advertisements",
+          url: "banners",
           params: {
             page: this.paginations.current_page,
             name: this.filterOptions.name,
             from: this.filterOptions.publish_start_date,
             to: this.filterOptions.publish_end_date,
-            status: this.filterOptions.is_active?.value,
+            isActive: this.filterOptions.is_active?.value,
           },
         });
         this.loading = false;
-        this.tableRows = res.data.data;
-        this.paginations.last_page = res.data.meta.last_page;
-        this.paginations.items_per_page = res.data.meta.per_page;
+        this.tableRows = res.data.data?.data;
+        this.paginations.last_page = res.data.data?.meta.last_page;
+        this.paginations.items_per_page = res.data.data?.meta.per_page;
       } catch (error) {
         this.loading = false;
         console.log(error.response.data.message);
@@ -543,7 +543,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `advertisements/toggle/${item.id}`,
+          url: `banners/toggle/${item.id}`,
         });
         this.$message.success(this.$t("MESSAGES.changeActivation"));
       } catch (error) {
@@ -565,7 +565,7 @@ export default {
 
     showImageModal(item) {
       this.dialogImage = true;
-      this.selectedItemImage = item.media;
+      this.selectedItemImage = item.file;
       const videoExtensions = [
         "mp4",
         "mov",
@@ -576,7 +576,7 @@ export default {
         "webm",
         "m4v",
       ];
-      const fileExtension = item.media.split(".").pop().toLowerCase();
+      const fileExtension = item.file.split(".").pop().toLowerCase();
       this.selectedItemType = videoExtensions.includes(fileExtension)
         ? "video"
         : "image";
@@ -592,7 +592,7 @@ export default {
       try {
         await this.$axios({
           method: "DELETE",
-          url: `advertisements/${this.itemToDelete.id}`,
+          url: `banners/${this.itemToDelete.id}`,
         });
         this.dialogDelete = false;
         this.tableRows = this.tableRows.filter((item) => {

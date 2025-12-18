@@ -741,7 +741,7 @@ const routes = [
 
       // Start:: Financial Reports Routes Config
       {
-        path: "/auctions-financial-reports",
+        path: "/financial-reports",
         name: "FinancialReportsHome",
         component: FinancialReportsHome,
         meta: {
@@ -751,6 +751,29 @@ const routes = [
           {
             path: "all",
             name: "AllFinancialReports",
+            component: AllFinancialReports,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "financial_reports index",
+                subject: "financial_reports",
+              },
+            },
+          },
+        ],
+      },
+
+      {
+        path: "/auctions-financial-reports",
+        name: "AuctionsFinancialReportsHome",
+        component: FinancialReportsHome,
+        meta: {
+          middleware: [auth],
+        },
+        children: [
+          {
+            path: "all",
+            name: "AllAuctionsFinancialReports",
             component: AllFinancialReports,
             meta: {
               middleware: [auth],
@@ -1027,41 +1050,41 @@ const routes = [
       // End:: products Config
 
       // Start:: orders  Config
-      // {
-      //   path: "/orders",
-      //   name: "orders",
-      //   component: ordersHome,
-      //   meta: {
-      //     middleware: [auth],
-      //   },
-      //   children: [
-      //     {
-      //       path: "all",
-      //       name: "Allorders",
-      //       component: Allorders,
-      //       meta: {
-      //         middleware: [auth],
-      //         requiresPermission: {
-      //           action: "orders index",
-      //           subject: "orders",
-      //         },
-      //       },
-      //     },
-      //     {
-      //       path: "show/:id",
-      //       name: "Showorders",
-      //       component: Showorders,
-      //       props: true,
-      //       meta: {
-      //         middleware: [auth],
-      //         requiresPermission: {
-      //           action: "orders show",
-      //           subject: "orders",
-      //         },
-      //       },
-      //     },
-      //   ],
-      // },
+      {
+        path: "/orders",
+        name: "orders",
+        component: ordersHome,
+        meta: {
+          middleware: [auth],
+        },
+        children: [
+          {
+            path: "all",
+            name: "Allorders",
+            component: Allorders,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "orders index",
+                subject: "orders",
+              },
+            },
+          },
+          {
+            path: "show/:id",
+            name: "Showorders",
+            component: Showorders,
+            props: true,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "orders show",
+                subject: "orders",
+              },
+            },
+          },
+        ],
+      },
       // End:: orders Config
 
       // Start:: nationalities  Config
@@ -2772,8 +2795,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "advertisements index",
-                subject: "advertisements",
+                action: "banners index",
+                subject: "banners",
               },
             },
           },
@@ -2784,8 +2807,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "advertisements create",
-                subject: "advertisements",
+                action: "banners create",
+                subject: "banners",
               },
             },
           },
@@ -2797,8 +2820,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "advertisements edit",
-                subject: "advertisements",
+                action: "banners edit",
+                subject: "banners",
               },
             },
           },
@@ -2810,8 +2833,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "advertisements show",
-                subject: "advertisements",
+                action: "banners show",
+                subject: "banners",
               },
             },
           },

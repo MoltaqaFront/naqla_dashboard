@@ -20,29 +20,65 @@
         <div class="filter_form_wrapper">
           <form @submit.prevent="submitFilterForm">
             <div class="row justify-content-center align-items-center w-100">
-              <!-- Start:: request_number Input -->
+              <!-- Start:: Delivery Agent Name Input -->
               <base-input
                 col="4"
                 type="text"
-                :placeholder="$t('SIDENAV.orders-provider.number_order')"
-                v-model.trim="filterOptions.request_number"
+                :placeholder="$t('PLACEHOLDERS.driverName')"
+                v-model.trim="filterOptions.driverName"
               />
-              <!-- End:: request_number Input -->
+              <!-- End:: Delivery Agent Name Input -->
 
-              <!-- Start:: user_name Input -->
-              <base-select-input
+              <!-- Start:: Email Input -->
+              <base-input
                 col="4"
-                :optionsList="clients"
-                :placeholder="$t('PLACEHOLDERS.name_admin')"
-                v-model.trim="filterOptions.user_id"
+                type="email"
+                :placeholder="$t('PLACEHOLDERS.email')"
+                v-model.trim="filterOptions.email"
               />
-              <!-- End:: user_name Input -->
+              <!-- End:: Email Input -->
+
+              <!-- Start:: Mobile Number Input -->
+              <base-input
+                col="4"
+                type="text"
+                :placeholder="$t('PLACEHOLDERS.mobileNumber')"
+                v-model.trim="filterOptions.mobile"
+              />
+              <!-- End:: Mobile Number Input -->
+
+              <!-- Start:: Order Number Input -->
+              <base-input
+                col="4"
+                type="text"
+                :placeholder="$t('PLACEHOLDERS.orderNum')"
+                v-model.trim="filterOptions.orderNumber"
+              />
+              <!-- End:: Order Number Input -->
+
+              <!-- Start:: Date From Input -->
+              <base-picker-input
+                col="4"
+                type="date"
+                :placeholder="$t('PLACEHOLDERS.dateFrom')"
+                v-model.trim="filterOptions.dateFrom"
+              />
+              <!-- End:: Date From Input -->
+
+              <!-- Start:: Date To Input -->
+              <base-picker-input
+                col="4"
+                type="date"
+                :placeholder="$t('PLACEHOLDERS.dateTo')"
+                v-model.trim="filterOptions.dateTo"
+              />
+              <!-- End:: Date To Input -->
 
               <!-- Start:: Status Input -->
               <base-select-input
                 col="4"
                 :optionsList="activeStatuses"
-                :placeholder="$t('SIDENAV.orders-provider.status')"
+                :placeholder="$t('PLACEHOLDERS.requestStatus')"
                 v-model="filterOptions.status"
               />
               <!-- End:: Status Input -->
@@ -93,61 +129,79 @@
         :items-per-page="paginations.items_per_page"
         hide-default-footer
       >
-        <template v-slot:[`item.rejection_reasons`]="{ item }">
-          {{ item.rejection_reasons || "-" }}
-        </template>
-
+        <!-- Start:: Serial Number -->
         <template v-slot:[`item.serial_number`]="{ item, index }">
-          <p class="blue-grey--text text--darken-1 fs-3" v-if="!item.id">-</p>
-          <p v-else>
-            {{
-              (paginations.current_page - 1) * paginations.items_per_page +
-              index +
-              1
-            }}
-          </p>
+          {{
+            (paginations.current_page - 1) * paginations.items_per_page +
+            index +
+            1
+          }}
         </template>
+        <!-- End:: Serial Number -->
+
+        <!-- Start:: Status Column with Translation and Color -->
+        <template v-slot:[`item.status`]="{ item }">
+          <v-chip
+            small
+            :color="getStatusColor(item.status_enum || item.status)"
+          >
+            {{ getStatusTranslation(item.status_enum || item.status) }}
+          </v-chip>
+        </template>
+        <!-- End:: Status Column -->
+
         <!-- Start:: No Data State -->
         <template v-slot:no-data>
           {{ $t("TABLES.noData") }}
         </template>
-        <!-- Start:: No Data State -->
+        <!-- End:: No Data State -->
+
         <!-- Start:: Actions -->
         <template v-slot:[`item.actions`]="{ item }">
-          <div class="actions" v-if="item.status == 'new'">
+          <div class="actions">
+            <!-- View Button -->
+            <!-- <a-tooltip placement="bottom">
+              <template slot="title">
+                <span>{{ $t("BUTTONS.show") }}</span>
+              </template>
+              <button class="btn_show" @click="showItem(item)">
+                <i class="fad fa-eye"></i>
+              </button>
+            </a-tooltip> -->
+
+            <!-- Approve Button (only for pending status) -->
             <a-tooltip
               placement="bottom"
-              v-if="$can('withdrawal_requests index', 'withdrawal_requests')"
+              v-if="(item.status_enum || item.status) === 'new'"
             >
               <template slot="title">
-                <span>{{ $t("BUTTONS.accept") }}</span>
+                <span>{{ $t("BUTTONS.approve") }}</span>
               </template>
               <button
-                class="btn_show"
+                class=""
                 @click="openRequestStatusModal(item, 'accepted')"
               >
                 <i class="fad fa-check-circle"></i>
               </button>
             </a-tooltip>
 
+            <!-- Reject Button (only for pending status) -->
             <a-tooltip
               placement="bottom"
-              v-if="$can('withdrawal_requests index', 'withdrawal_requests')"
+              v-if="(item.status_enum || item.status) === 'new'"
             >
               <template slot="title">
                 <span>{{ $t("BUTTONS.reject") }}</span>
               </template>
               <button
-                class="btn_deactivate"
+                class=""
                 @click="openRequestStatusModal(item, 'rejected')"
               >
                 <i class="fad fa-times-circle"></i>
               </button>
             </a-tooltip>
           </div>
-          <div v-else>-</div>
         </template>
-
         <!-- End:: Actions -->
 
         <!-- ======================== Start:: Dialogs ======================== -->
@@ -155,39 +209,42 @@
           <v-dialog v-model="dialogStatusAccept">
             <v-card>
               <v-card-title class="text-h5 justify-center">
-                {{ $t("PLACEHOLDERS.accept_settlement_request") }}
+                {{ $t("PLACEHOLDERS.approveSettlementRequest") }}
               </v-card-title>
-              <div class="w-100">
+              <div class="w-100 px-5 pb-5">
                 <div class="mt-3">
-                  <h6 class="d-inline-block font-weight-bold mb-4">
-                    {{ $t("SIDENAV.Clients.user_balance") }}:
-                  </h6>
-                  <h6 class="d-inline-block mx-1">
-                    {{ modalRequest?.amount }}
+                  <p class="mb-3">
+                    <strong>{{ $t("PLACEHOLDERS.driverName") }}:</strong>
+                    {{ modalRequest?.user?.name || "-" }}
+                  </p>
+                  <p class="mb-3">
+                    <strong
+                      >{{ $t("PLACEHOLDERS.currentWalletBalance") }}:</strong
+                    >
+                    {{ modalRequest?.user?.current_user_balance || 0 }}
                     {{ $t("PLACEHOLDERS.riyal") }}
-                  </h6>
-                  <div>
-                    <label class="font-weight-bold mx-1"
-                      >{{ $t("PLACEHOLDERS.settlement_request_money") }}:
-                    </label>
-                    <input
-                      type="number"
-                      v-model.trim="modalRequest.money"
-                      class="bg-white rounded mx-3 p-2 w-25"
-                    />
-                    <span>{{ $t("PLACEHOLDERS.riyal") }}</span>
-                    <div class="text-center mt-5">
-                      <v-btn
-                        class="modal_confirm_btn mx-1 bg-success text-white"
-                        @click="changeRequestStatus(modalRequest, 'accepted')"
-                        >{{ $t("BUTTONS.save") }}</v-btn
-                      >
-                      <v-btn
-                        class="modal_confirm_btn mx-1 bg-danger text-white"
-                        @click="cancelRequest()"
-                        >{{ $t("BUTTONS.cancel") }}</v-btn
-                      >
-                    </div>
+                  </p>
+                  <p class="mb-3">
+                    <strong>{{ $t("PLACEHOLDERS.requestedAmount") }}:</strong>
+                    {{ modalRequest?.amount || 0 }}
+                    {{ $t("PLACEHOLDERS.riyal") }}
+                  </p>
+
+                  <div class="text-center mt-5">
+                    <v-btn
+                      class="modal_confirm_btn mx-2"
+                      color="success"
+                      @click="changeRequestStatus(modalRequest, 'accepted')"
+                    >
+                      {{ $t("BUTTONS.approve") }}
+                    </v-btn>
+                    <v-btn
+                      class="modal_cancel_btn mx-2"
+                      color="error"
+                      @click="cancelRequest()"
+                    >
+                      {{ $t("BUTTONS.cancel") }}
+                    </v-btn>
                   </div>
                 </div>
               </div>
@@ -196,33 +253,49 @@
 
           <v-dialog v-model="dialogStatusReject">
             <v-card>
-              <!-- <v-card-title class="text-h5 justify-center">
-                {{ $t("PLACEHOLDERS.accept_settlement_request") }}
-              </v-card-title> -->
-              <div class="w-100">
+              <v-card-title class="text-h5 justify-center">
+                {{ $t("PLACEHOLDERS.rejectSettlementRequest") }}
+              </v-card-title>
+              <div class="w-100 px-5 pb-5">
                 <div class="mt-3">
-                  <div>
-                    <label class="font-weight-bold mx-1"
-                      >{{ $t("PLACEHOLDERS.reason_reject") }}:
+                  <p class="mb-3">
+                    <strong>{{ $t("PLACEHOLDERS.driverName") }}:</strong>
+                    {{ modalRequest?.user?.name || "-" }}
+                  </p>
+                  <p class="mb-3">
+                    <strong>{{ $t("PLACEHOLDERS.requestedAmount") }}:</strong>
+                    {{ modalRequest?.amount || 0 }}
+                    {{ $t("PLACEHOLDERS.riyal") }}
+                  </p>
+
+                  <div class="mt-4">
+                    <label class="font-weight-bold d-block mb-2">
+                      {{ $t("PLACEHOLDERS.rejectionReason") }} *
                     </label>
-                    <input
-                      type="textarea"
+                    <textarea
+                      v-model.trim="modalRequest.rejection_reason"
+                      class="w-100 p-3"
                       rows="4"
-                      v-model.trim="modalRequest.reason"
-                      class="bg-white rounded p-2 w-100 mt-4"
-                    />
-                    <div class="text-center mt-5">
-                      <v-btn
-                        class="modal_confirm_btn mx-1 bg-success text-white"
-                        @click="changeRequestStatus(modalRequest, 'rejected')"
-                        >{{ $t("BUTTONS.save") }}</v-btn
-                      >
-                      <v-btn
-                        class="modal_confirm_btn mx-1 bg-danger text-white"
-                        @click="cancelRequest()"
-                        >{{ $t("BUTTONS.cancel") }}</v-btn
-                      >
-                    </div>
+                      :placeholder="$t('PLACEHOLDERS.enterRejectionReason')"
+                      style="border: 1px solid #ccc; border-radius: 4px"
+                    ></textarea>
+                  </div>
+
+                  <div class="text-center mt-5">
+                    <v-btn
+                      class="modal_confirm_btn mx-2"
+                      color="error"
+                      :disabled="!modalRequest.rejection_reason"
+                      @click="changeRequestStatus(modalRequest, 'rejected')"
+                    >
+                      {{ $t("BUTTONS.reject") }}
+                    </v-btn>
+                    <v-btn
+                      class="modal_cancel_btn mx-2"
+                      @click="cancelRequest()"
+                    >
+                      {{ $t("BUTTONS.cancel") }}
+                    </v-btn>
                   </div>
                 </div>
               </div>
@@ -273,12 +346,12 @@ export default {
       return [
         {
           id: 1,
-          name: this.$t("STATUS.new"),
+          name: this.$t("STATUS.pending"),
           value: "new",
         },
         {
           id: 2,
-          name: this.$t("STATUS.accepted"),
+          name: this.$t("STATUS.approved"),
           value: "accepted",
         },
         {
@@ -300,12 +373,15 @@ export default {
       // Start:: Filter Data
       filterFormIsActive: false,
       filterOptions: {
-        request_number: null,
+        driverName: null,
+        email: null,
+        mobile: null,
+        orderNumber: null,
+        dateFrom: null,
+        dateTo: null,
         status: null,
-        user_name: null,
       },
       // End:: Filter Data
-      clients: [],
       // Start:: Table Data
       searchValue: "",
       tableHeaders: [
@@ -316,53 +392,47 @@ export default {
           sortable: false,
         },
         {
-          text: this.$t("SIDENAV.orders-provider.number_order"),
-          value: "id",
+          text: this.$t("PLACEHOLDERS.orderNum"),
+          value: "serial_number",
           sortable: false,
           align: "center",
         },
         {
-          text: this.$t("PLACEHOLDERS.name_admin"),
-          value: "teacher_name",
+          text: this.$t("PLACEHOLDERS.driverName"),
+          value: "user.name",
           sortable: false,
           align: "center",
         },
         {
-          text: this.$t("SIDENAV.orders-provider.created_at"),
-          value: "date_time.date",
+          text: this.$t("PLACEHOLDERS.email"),
+          value: "user.email",
           sortable: false,
           align: "center",
         },
         {
-          text: this.$t("PLACEHOLDERS.settlement_request_money"),
+          text: this.$t("PLACEHOLDERS.mobileNumber"),
+          value: "user.mobile",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.requestedAmount"),
           value: "amount",
           sortable: false,
           align: "center",
         },
         {
-          text: this.$t("SIDENAV.orders-provider.status"),
-          value: "status_translated",
+          text: this.$t("PLACEHOLDERS.requestDate"),
+          value: "created_at",
           sortable: false,
           align: "center",
         },
         {
-          text: this.$t("PLACEHOLDERS.reason_reject"),
-          value: "rejection_reasons",
+          text: this.$t("PLACEHOLDERS.requestStatus"),
+          value: "status",
           sortable: false,
           align: "center",
         },
-        // {
-        //   text: this.$t("PLACEHOLDERS.bank_name"),
-        //   value: "bank_name",
-        //   sortable: false,
-        //   align: "center",
-        // },
-        // {
-        //   text: this.$t("PLACEHOLDERS.iban"),
-        //   value: "iban",
-        //   sortable: false,
-        //   align: "center",
-        // },
         {
           text: this.$t("TABLES.Admins.actions"),
           value: "actions",
@@ -387,12 +457,6 @@ export default {
       },
       // End:: Pagination Data
 
-      regions: [],
-      cites: [],
-      currentRequest: {
-        money: null,
-        reason: "",
-      },
       modalRequest: {},
     };
   },
@@ -418,9 +482,13 @@ export default {
       this.setTableRows();
     },
     async resetFilter() {
-      this.filterOptions.request_number = null;
+      this.filterOptions.driverName = null;
+      this.filterOptions.email = null;
+      this.filterOptions.mobile = null;
+      this.filterOptions.orderNumber = null;
+      this.filterOptions.dateFrom = null;
+      this.filterOptions.dateTo = null;
       this.filterOptions.status = null;
-      this.filterOptions.user_id = null;
 
       if (this.$route.query.page !== "1") {
         await this.$router.push({
@@ -448,26 +516,27 @@ export default {
     async setTableRows() {
       this.loading = true;
       try {
-        console.log("this.filterOptions.request_number", this.filterOptions);
         let res = await this.$axios({
           method: "GET",
-          url: "wallet-withdrawel-requests",
+          url: "withdraw-requests",
           params: {
             page: this.paginations.current_page,
-            id: this.filterOptions.request_number,
-            // user_id: this.filterOptions.user_id?.id,
-            name: this.filterOptions.user_id,
+            driver_name: this.filterOptions.driverName,
+            email: this.filterOptions.email,
+            mobile: this.filterOptions.mobile,
+            order_number: this.filterOptions.orderNumber,
+            date_from: this.filterOptions.dateFrom,
+            date_to: this.filterOptions.dateTo,
             status: this.filterOptions.status?.value,
           },
         });
         this.loading = false;
-        this.tableRows = res.data.data;
-        // console.log(res.data.data.items?.id.requestwallet.request_number);
-        this.paginations.last_page = res.data.meta.last_page;
-        this.paginations.items_per_page = res.data.meta.per_page;
+        this.tableRows = res.data.data?.data || [];
+        this.paginations.last_page = res.data.data?.links?.last_page || 1;
+        this.paginations.items_per_page = res.data.data?.links?.per_page || 15;
       } catch (error) {
         this.loading = false;
-        console.log(error.response.data.message);
+        console.log(error.response?.data?.message || error.message);
       }
     },
     // End:: Set Table Rows
@@ -479,27 +548,24 @@ export default {
         this.dialogStatusReject = true;
       }
       this.modalRequest = { ...item };
-      this.currentRequest = item;
     },
+
     async changeRequestStatus(modalRequest, status) {
       const REQUEST_DATA = new FormData();
+      REQUEST_DATA.append("status", status);
 
-      REQUEST_DATA.append("id", modalRequest.id);
-
-      if (status === "rejected" && modalRequest?.reason) {
-        REQUEST_DATA.append("rejection_reasons", modalRequest?.reason);
-        REQUEST_DATA.append("status", 0);
+      if (status === "rejected" && modalRequest?.rejection_reason) {
+        REQUEST_DATA.append("rejection_reason", modalRequest.rejection_reason);
       }
 
-      if (status === "accepted" && modalRequest?.money) {
-        REQUEST_DATA.append("amount", modalRequest?.money);
-        REQUEST_DATA.append("status", 1);
+      if (status === "accepted" && modalRequest?.amount) {
+        REQUEST_DATA.append("amount", modalRequest.amount);
       }
 
       try {
         await this.$axios({
           method: "POST",
-          url: `status/wallet-withdrawel-requests`,
+          url: `withdraw-requests/change-status/${modalRequest.id}`,
           data: REQUEST_DATA,
         });
 
@@ -508,8 +574,30 @@ export default {
         this.setTableRows();
         this.$message.success(this.$t("MESSAGES.editedSuccessfully"));
       } catch (error) {
-        this.$message.error(error.response.data.message);
+        this.$message.error(
+          error.response?.data?.message || this.$t("MESSAGES.failed")
+        );
       }
+    },
+
+    // Get status translation
+    getStatusTranslation(status) {
+      const statusMap = {
+        new: this.$t("STATUS.pending"),
+        accepted: this.$t("STATUS.approved"),
+        rejected: this.$t("STATUS.rejected"),
+      };
+      return statusMap[status] || status;
+    },
+
+    // Get status color
+    getStatusColor(status) {
+      const colorMap = {
+        new: "orange",
+        accepted: "green",
+        rejected: "red",
+      };
+      return colorMap[status] || "grey";
     },
 
     // ==================== Start:: Crud ====================

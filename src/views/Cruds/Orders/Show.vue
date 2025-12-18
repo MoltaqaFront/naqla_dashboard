@@ -15,35 +15,27 @@
     <div class="single_step_form_content_wrapper">
       <form @submit.prevent="validateFormInputs">
         <div class="row">
-          <!-- Start:: Image Upload Input -->
-          <!-- <base-image-upload-input
-            col="12"
-            identifier="admin_image"
-            :preSelectedImage="data.image.path"
-            :placeholder="$t('PLACEHOLDERS.productImg')"
-            @selectImage="selectImage"
-            disabled
-          /> -->
-          <!-- End:: Image Upload Input -->
-          <h2>{{ $t("PLACEHOLDERS.showOrder") }}</h2>
+          <!-- Start:: Order Basic Info -->
+          <div class="col-12 mb-4">
+            <h5>{{ $t("PLACEHOLDERS.orderInformation") }}</h5>
+          </div>
+
           <base-input
             col="4"
             type="text"
             :placeholder="$t('PLACEHOLDERS.orderNum')"
-            v-model.trim="data.orderNum"
+            v-model.trim="data.order_number"
             disabled
           />
-          <!-- End:: Name Input -->
 
-          <!-- Start:: Name Input -->
           <base-input
             col="4"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.orderCreate')"
-            v-model.trim="data.orderCreate"
+            :placeholder="$t('PLACEHOLDERS.orderDate')"
+            v-model.trim="data.created_at"
             disabled
           />
-          <!-- Start:: Status Input -->
+
           <base-input
             col="4"
             type="text"
@@ -51,343 +43,280 @@
             v-model="data.status"
             disabled
           />
+
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.orderName')"
+            v-model.trim="data.name"
+            disabled
+          />
+
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.internalReference')"
+            v-model.trim="data.internal_reference"
+            disabled
+          />
+
+          <base-input
+            col="12"
+            rows="3"
+            type="textarea"
+            :placeholder="$t('PLACEHOLDERS.orderDescription')"
+            v-model.trim="data.description"
+            disabled
+          />
+
+          <base-input
+            col="12"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.pickupAddress')"
+            v-model.trim="data.pickup_address"
+            disabled
+          />
+
+          <base-input
+            col="12"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.dropoffAddress')"
+            v-model.trim="data.dropoff_address"
+            disabled
+          />
+
+          <div class="input_wrapper switch_wrapper my-5 col-6">
+            <v-switch
+              color="green"
+              :label="$t('PLACEHOLDERS.needHelp')"
+              v-model="data.need_help"
+              hide-details
+              disabled
+            ></v-switch>
+          </div>
+
+          <div class="input_wrapper switch_wrapper my-5 col-6">
+            <v-switch
+              color="orange"
+              :label="$t('PLACEHOLDERS.isFragile')"
+              v-model="data.is_fragile"
+              hide-details
+              disabled
+            ></v-switch>
+          </div>
+
+          <!-- Order Images -->
+          <div class="col-12" v-if="data.images && data.images.length">
+            <h6 class="mb-3">{{ $t("PLACEHOLDERS.orderImages") }}</h6>
+            <div class="d-flex gap-3 flex-wrap">
+              <div
+                v-for="(image, index) in data.images"
+                :key="index"
+                class="image-preview"
+              >
+                <img :src="image" :alt="'Order Image ' + (index + 1)" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Start:: Customer Information -->
+          <div class="col-12 mb-4 mt-4">
+            <h5>{{ $t("PLACEHOLDERS.customerInformation") }}</h5>
+          </div>
+
+          <div class="col-12 mb-3" v-if="data.user && data.user.avatar">
+            <div class="text-center">
+              <img
+                :src="data.user.avatar"
+                alt="Customer Avatar"
+                class="avatar-image"
+              />
+            </div>
+          </div>
+
           <base-input
             col="4"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.excuteAt')"
-            v-model="data.excuteAt"
+            :placeholder="$t('PLACEHOLDERS.clientName')"
+            v-model="data.user.name"
             disabled
           />
-          <div
-            class="col-4"
-            v-for="(time, index) in data.excutetime"
-            :key="index"
-          >
+
+          <base-input
+            col="4"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.clientPhone')"
+            v-model="data.user.mobile"
+            disabled
+          />
+
+          <base-input
+            col="4"
+            type="email"
+            :placeholder="$t('PLACEHOLDERS.email')"
+            v-model="data.user.email"
+            disabled
+          />
+
+          <!-- Start:: Driver Information -->
+          <div class="col-12 mb-4 mt-4" v-if="data.driver">
+            <h5>{{ $t("PLACEHOLDERS.driverInformation") }}</h5>
+          </div>
+
+          <template v-if="data.driver">
+            <div class="col-12 mb-3" v-if="data.driver.avatar">
+              <div class="text-center">
+                <img
+                  :src="data.driver.avatar"
+                  alt="Driver Avatar"
+                  class="avatar-image"
+                />
+              </div>
+            </div>
+
             <base-input
-              col="12"
+              col="4"
               type="text"
-              :placeholder="$t('PLACEHOLDERS.excutetime')"
-              v-model.trim="time.name"
+              :placeholder="$t('PLACEHOLDERS.driverName')"
+              v-model="data.driver.name"
+              disabled
             />
-          </div>
-          <h2>{{ $t("PLACEHOLDERS.unitData") }}</h2>
 
-          <base-input
-            col="4"
-            type="text"
-            :placeholder="$t('SIDENAV.GoldenOrder.unitName')"
-            v-model.trim="data.unit_name"
-            disabled
-          />
-          <base-input
-            col="4"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.unitSpace')"
-            v-model.trim="data.unitSpace"
-            disabled
-          />
-          <base-input
-            col="4"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.secret_number')"
-            v-model.trim="data.secret_number"
-            disabled
-          />
-          <div v-if="data.additions?.length">
-            <div
-              class="col-12"
-              v-for="(item, index) in data.additions"
-              :key="item"
-            >
-              <v-chip>{{ $t("PLACEHOLDERS.additions") + (index + 1) }}</v-chip>
-              <base-input
-                col="12"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.additionName')"
-                v-model.trim="item.name_addition"
+            <base-input
+              col="4"
+              type="text"
+              :placeholder="$t('PLACEHOLDERS.driverPhone')"
+              v-model="data.driver.mobile"
+              disabled
+            />
+
+            <base-input
+              col="4"
+              type="text"
+              :placeholder="$t('PLACEHOLDERS.driverRating')"
+              v-model="data.driver.avg_rate"
+              disabled
+            />
+
+            <base-input
+              v-if="data.driver.vehicle"
+              col="6"
+              type="text"
+              :placeholder="$t('PLACEHOLDERS.vehicleName')"
+              v-model="data.driver.vehicle.name"
+              disabled
+            />
+
+            <div class="input_wrapper switch_wrapper my-5 col-6">
+              <v-switch
+                color="green"
+                :label="
+                  data.driver.is_active
+                    ? $t('PLACEHOLDERS.active')
+                    : $t('PLACEHOLDERS.notActive')
+                "
+                v-model="data.driver.is_active"
+                hide-details
                 disabled
-              />
-              <base-input
-                col="12"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.additionCount')"
-                v-model.trim="item.count_addition"
-                disabled
-              />
-              <base-input
-                col="12"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.servicePriceForAdd')"
-                v-model.trim="item.price"
-                disabled
-              />
+              ></v-switch>
             </div>
-          </div>
+          </template>
 
-          <h2>{{ $t("PLACEHOLDERS.serviceData") }}</h2>
+          <!-- Start:: Financial Information -->
+          <div class="col-12 mb-4 mt-4">
+            <h5>{{ $t("PLACEHOLDERS.financialInformation") }}</h5>
+          </div>
 
           <base-input
             col="4"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.serviceName')"
-            v-model.trim="data.serviceName"
+            :placeholder="$t('PLACEHOLDERS.mainPrice')"
+            v-model="data.main_price"
             disabled
           />
+
           <base-input
             col="4"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.servicePrice')"
-            v-model.trim="data.servicePrice"
-            disabled
-          />
-          <!-- <base-input
-            col="4"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.price_additions')"
-            v-model.trim="data.price_additions"
-            disabled
-          /> -->
-
-          <div class="col-12" v-if="data.products?.length">
-            <h2>{{ $t("PLACEHOLDERS.productData") }}</h2>
-
-            <div v-for="(product, index) in data.products" :key="product">
-              <v-chip>{{ $t("PLACEHOLDERS.product") + (index + 1) }}</v-chip>
-              <base-input
-                col="12"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.productName')"
-                v-model.trim="product.name_product"
-                disabled
-              />
-
-              <base-input
-                col="12"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.productPrice')"
-                v-model.trim="product.price"
-                disabled
-              />
-              <base-input
-                col="12"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.quantatyy')"
-                v-model.trim="product.count_product"
-                disabled
-              />
-            </div>
-          </div>
-          <div class="col-12" v-if="data.addServices?.length">
-            <h2>{{ $t("PLACEHOLDERS.addServices") }}</h2>
-
-            <div v-for="(service, index) in data.addServices" :key="service">
-              <v-chip>{{ $t("PLACEHOLDERS.service") + (index + 1) }}</v-chip>
-              <base-input
-                col="12"
-                type="textarea"
-                :placeholder="$t('PLACEHOLDERS.addServicesDecs')"
-                v-model.trim="service.description"
-                disabled
-              />
-
-              <base-input
-                col="12"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.addServicesPrice')"
-                v-model.trim="service.price"
-                disabled
-              />
-              <base-input
-                col="12"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.addServicesStatus')"
-                v-model.trim="service.status"
-                disabled
-              />
-            </div>
-          </div>
-
-          <h2>{{ $t("PLACEHOLDERS.priceData") }}</h2>
-          <base-input
-            col="6"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.totalePrce')"
-            v-model="data.totalePrce"
-            disabled
-          />
-          <base-input
-            col="6"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.totalTax')"
-            v-model="data.totalTax"
-            disabled
-          />
-
-          <base-input
-            col="6"
             type="text"
             :placeholder="$t('PLACEHOLDERS.discount')"
             v-model="data.discount"
             disabled
           />
+
           <base-input
-            col="6"
+            col="4"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.discountValue')"
-            v-model="data.discountValue"
+            :placeholder="$t('PLACEHOLDERS.finalPrice')"
+            v-model="data.price"
             disabled
           />
 
           <base-input
-            col="6"
+            v-if="data.payment_data"
+            col="4"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.orderPriceAfterDiscount')"
-            v-model="data.totalOrderPrice"
+            :placeholder="$t('PLACEHOLDERS.paymentStatus')"
+            v-model="data.payment_data.payment_status"
             disabled
           />
 
           <base-input
-            col="6"
+            v-if="data.payment_data"
+            col="4"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.totalOrderPrice')"
-            v-model="data.orderPriceAfterDiscount"
+            :placeholder="$t('PLACEHOLDERS.paymentMethod')"
+            v-model="data.payment_data.payment_method"
             disabled
           />
-
-          <h2 v-if="data.cleaners && data.cleaners.length">
-            {{ $t("PLACEHOLDERS.team") }}
-          </h2>
-
-          <div
-            v-if="data.cleaners && data.cleaners.length"
-            class="row"
-            v-for="cleaner in data.cleaners"
-            :key="cleaner"
-          >
-            <base-input
-              col="6"
-              type="text"
-              :placeholder="$t('PLACEHOLDERS.name')"
-              v-model="cleaner.name"
-              disabled
-            />
-            <base-input
-              col="6"
-              type="text"
-              :placeholder="$t('PLACEHOLDERS.phoneNumber')"
-              v-model="cleaner.whattsapp"
-              disabled
-            />
-          </div>
-
-          <div
-            class="col-12"
-            v-for="method in data.PaymentMethods"
-            :key="method"
-          >
-            <base-input
-              col="12"
-              type="text"
-              :placeholder="$t('PLACEHOLDERS.PaymentMethods')"
-              v-model="method.payment_method"
-              disabled
-            />
-            <base-input
-              col="12"
-              type="text"
-              :placeholder="$t('PLACEHOLDERS.PaymentMoney')"
-              v-model="method.money"
-              disabled
-            />
-            <base-input
-              v-if="
-                data.back &&
-                data.PaymentMethods &&
-                data.PaymentMethods.length < 2
-              "
-              col="12"
-              type="text"
-              :placeholder="$t('PLACEHOLDERS.back')"
-              v-model="data.back"
-              disabled
-            />
-            <hr />
-          </div>
-
-          <h2>{{ $t("PLACEHOLDERS.userData") }}</h2>
 
           <base-input
-            col="6"
+            v-if="data.payment_data"
+            col="4"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.clientName')"
-            v-model="data.clientName"
+            :placeholder="$t('PLACEHOLDERS.gatewayReference')"
+            v-model="data.payment_data.gateway_reference"
             disabled
           />
+
           <base-input
-            col="6"
+            v-if="data.payment_data"
+            col="4"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.clientPhone')"
-            v-model="data.clientPhone"
+            :placeholder="$t('PLACEHOLDERS.commissionRatio')"
+            v-model="data.payment_data.commission_ratio"
             disabled
           />
-          <div v-if="data.cleaners">
-            <h2>{{ $t("PLACEHOLDERS.employeeRate") }}</h2>
 
-            <div class="d-flex" v-for="cleaner in data.cleaners">
-              <base-input
-                col="6"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.name')"
-                v-model="cleaner.name"
-                disabled
-              />
-              <base-input
-                col="6"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.whatsapp')"
-                v-model="cleaner.whatsapp"
-                disabled
-              />
-            </div>
-          </div>
+          <base-input
+            v-if="data.payment_data"
+            col="4"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.commissionAmount')"
+            v-model="data.payment_data.commission_amount"
+            disabled
+          />
 
-          <div class="col-12" v-if="data.rate?.rate_service">
-            <h2>{{ $t("PLACEHOLDERS.rates") }}</h2>
-            <h6 class="text-center">{{ $t("PLACEHOLDERS.serviceRate") }}</h6>
-            <rating-preview :rate="data.rate?.rate_service" />
-            <h6 class="text-center">{{ $t("PLACEHOLDERS.matsRate") }}</h6>
-            <rating-preview :rate="data.rate?.rate_materials" />
-            <h6 class="text-center">{{ $t("PLACEHOLDERS.employeeRate") }}</h6>
-            <rating-preview :rate="data.rate?.rate_cleaners" />
-            <h6 class="text-center">{{ $t("PLACEHOLDERS.appRate") }}</h6>
-            <rating-preview :rate="data.rate?.rate_application" />
-            <label class="form-label mt-5 comment_label">
-              {{ $t("PLACEHOLDERS.comment") }}
-            </label>
-            <div
-              col="12"
-              type="text"
-              v-html="data.rate.comment.replace(/\n/g, '<br>')"
-              disabled
-              class="comment"
-            ></div>
+          <base-input
+            v-if="data.payment_data"
+            col="4"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.driverProfit')"
+            v-model="data.payment_data.provider_profit"
+            disabled
+          />
+
+          <!-- Cancel Reason if canceled -->
+          <div class="col-12 mb-4 mt-4" v-if="data.cancel_reason">
+            <h5>{{ $t("PLACEHOLDERS.cancelInformation") }}</h5>
           </div>
 
           <base-input
-            v-if="data.cancelReason"
-            col="6"
-            type="text"
+            v-if="data.cancel_reason"
+            col="12"
+            rows="3"
+            type="textarea"
             :placeholder="$t('PLACEHOLDERS.cancelReason')"
-            v-model="data.cancelReason"
-            disabled
-          />
-
-          <base-input
-            v-if="data.cancelDate"
-            col="6"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.cancelDate')"
-            v-model="data.cancelDate"
+            v-model="data.cancel_reason"
             disabled
           />
         </div>
@@ -398,14 +327,9 @@
 </template>
 
 <script>
-// import RatingPreview from "@/components/ui/RatingPreview.vue";
-import RatingPreview from "../../../components/ui/RatingPreview.vue";
 export default {
-  components: { RatingPreview },
-  name: "showCity",
-  comments: {
-    RatingPreview,
-  },
+  name: "ShowOrder",
+
   data() {
     return {
       // Start:: Loader Control Data
@@ -414,56 +338,52 @@ export default {
 
       // Start:: Data Collection To Send
       data: {
-        totalePrce: null,
-        totalTax: null,
-        totalOrderPrice: null,
+        id: null,
+        order_number: null,
+        created_at: null,
+        status: null,
+        cancel_reason: null,
+        name: null,
+        description: null,
+        need_help: false,
+        is_fragile: false,
+        images: [],
+        pickup_address: null,
+        dropoff_address: null,
+        main_price: null,
         discount: null,
-        discountValue: null,
-        orderPriceAfterDiscount: null,
-        comment: null,
-        orderNum: null,
-        orderCreate: null,
-        status: null,
-        unit_name: null,
-        userName: null,
-        userType: null,
-        mangement: null,
-        secret_number: null,
-        products: null,
-        serviceName: null,
-        servicePrice: null,
-        rate: null,
-        manegerNmae: null,
-        excuteAt: null,
-        orderCode: "",
-        mainC: null,
-        clientName: null,
-        back: null,
-        clientPhone: null,
-        status: null,
-        cancelReason: null,
-        cancelDate: null,
-        subC: null,
-        addServices: null,
-        price_additions: null,
-        PaymentMethods: null,
-        descProd: null,
-        excutetime: [],
-        wood: null,
-        countryFact: null,
-        quantatyWanted: null,
-        active: null,
-        image: {
-          path: null,
-          file: null,
+        price: null,
+        internal_reference: null,
+        driver: {
+          id: null,
+          name: null,
+          mobile: null,
+          is_active: false,
+          avatar: null,
+          vehicle: {
+            name: null,
+            id: null,
+          },
+          avg_rate: null,
         },
-        nameAr: null,
-        nameEn: null,
-        region_id: null,
-        active: null,
-        cleaners: [],
+        user: {
+          id: null,
+          name: null,
+          mobile: null,
+          email: null,
+          avatar: null,
+        },
+        payment_data: {
+          payment_status: null,
+          main_price: null,
+          discount: null,
+          payment_method: null,
+          gateway_reference: null,
+          commission_ratio: null,
+          commission_amount: null,
+          provider_profit: null,
+        },
       },
-      regions: [],
       // End:: Data Collection To Send
     };
   },
@@ -472,81 +392,106 @@ export default {
 
   methods: {
     // start show data
-    async showCity() {
+    async showOrder() {
       try {
         let res = await this.$axios({
           method: "GET",
           url: `orders/${this.$route.params.id}`,
         });
-        this.data.status = res.data.data.Order?.status;
-        this.data.orderNum = res.data.data.Order?.number_order;
-        this.data.orderCreate = res.data.data.Order?.created_at;
-        this.data.status = res.data.data.Order?.status;
-        this.data.excuteAt = res.data.data.Order?.date;
-        this.data.excutetime = res.data.data.Order.time?.map((ele, index) => ({
-          id: index,
-          name: ele,
-        }));
-        this.data.unit_name = res.data.data.Order?.unit_name;
-        this.data.unitSpace = res.data.data.Order?.unit_capacity;
-        this.data.additions = res.data.data.Order?.additions;
-        this.data.secret_number = res.data.data.Order?.secret_number;
-        this.data.serviceName = res.data.data.Order?.service_name;
-        this.data.servicePrice = res.data.data.Order?.service_price;
-        this.data.products = res.data.data.Order?.products;
-        this.data.addServices = res.data.data.Order?.AdditionServices;
-        this.data.totalePrce = res.data.data.Order?.order_price;
-        this.data.totalTax = res.data.data.Order?.tax_value;
-        this.data.totalOrderPrice = res.data.data.Order?.total;
-        this.data.discount = res.data.data.Order?.percentage;
-        this.data.discountValue = res.data.data.Order?.price_percentage;
-        this.data.orderPriceAfterDiscount = res.data.data.Order?.total_amount;
-        this.data.PaymentMethods = res.data.data.Order?.OrderPayment;
-        this.data.back = res.data.data.Order?.package_name;
-        this.data.cleaners = res.data.data.Order?.cleaners;
-        this.data.clientName = res.data.data.Order?.user_name;
-        this.data.clientPhone = res.data.data.Order?.user_mobile;
-        this.data.rate = res.data.data.Order?.rate;
-        this.data.cancelReason = res.data.data.Order?.reason;
-        this.data.cancelDate = res.data.data.Order?.reason_time;
+
+        const order = res.data.data?.Order;
+
+        // Map order data
+        this.data.id = order.id;
+        this.data.order_number = order.order_number;
+        this.data.created_at = order.created_at;
+        this.data.status = order.status;
+        this.data.cancel_reason = order.cancel_reason;
+        this.data.name = order.name;
+        this.data.description = order.description;
+        this.data.need_help = order.need_help;
+        this.data.is_fragile = order.is_fragile;
+        this.data.images = order.images || [];
+        this.data.pickup_address = order.pickup_address;
+        this.data.dropoff_address = order.dropoff_address;
+        this.data.main_price = order.main_price;
+        this.data.discount = order.discount;
+        this.data.price = order.price;
+        this.data.internal_reference = order.internal_reference;
+
+        // Map driver data
+        if (order.driver) {
+          this.data.driver = {
+            id: order.driver.id,
+            name: order.driver.name,
+            mobile: order.driver.mobile,
+            is_active: order.driver.is_active,
+            avatar: order.driver.avatar,
+            vehicle: order.driver.vehicle || { name: null, id: null },
+            avg_rate: order.driver.avg_rate,
+          };
+        }
+
+        // Map user data
+        if (order.user) {
+          this.data.user = {
+            id: order.user.id,
+            name: order.user.name,
+            mobile: order.user.mobile,
+            email: order.user.email,
+            avatar: order.user.avatar,
+          };
+        }
+
+        // Map payment data
+        if (order.payment_data) {
+          this.data.payment_data = {
+            payment_status: order.payment_data.payment_status,
+            main_price: order.payment_data.main_price,
+            discount: order.payment_data.discount,
+            payment_method: order.payment_data.payment_method,
+            gateway_reference: order.payment_data.gateway_reference,
+            commission_ratio: order.payment_data.commission_ratio,
+            commission_amount: order.payment_data.commission_amount,
+            provider_profit: order.payment_data.provider_profit,
+          };
+        }
       } catch (error) {
         this.loading = false;
-        console.log(error.response.data.message);
+        console.log(error?.response?.data?.message);
       }
     },
     // end show data
-    async getRegions() {
-      try {
-        let res = await this.$axios({
-          method: "GET",
-          url: `regions`,
-          params: {
-            is_active: 1,
-          },
-        });
-        // console.log("Cities =>", res.data.data);
-        this.regions = res.data.data;
-      } catch (error) {
-        console.log(error.response.data.message);
-      }
-    },
   },
 
   created() {
     // Start:: Fire Methods
-    this.showCity();
+    this.showOrder();
     // End:: Fire Methods
   },
 };
 </script>
-<style>
-.comment {
-  border: 1px solid #007f5f;
-  padding: 15px;
-  border-radius: 6px;
+
+<style scoped>
+.avatar-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #007f5f;
 }
-.comment_label {
-  color: #007f5f;
-  font-size: 16px;
+
+.image-preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid #ddd;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>

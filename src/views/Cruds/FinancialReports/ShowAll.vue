@@ -19,35 +19,65 @@
         <div class="filter_form_wrapper">
           <form @submit.prevent="submitFilterForm">
             <div class="row justify-content-center align-items-center w-100">
+              <!-- Start:: Delivery Agent Name -->
               <base-input
-                col="5"
+                col="4"
                 type="text"
-                :placeholder="$t('PLACEHOLDERS.advertiser_name')"
-                v-model="filterOptions.advertiser_name"
+                :placeholder="$t('PLACEHOLDERS.driverName')"
+                v-model="filterOptions.driverName"
               />
+              <!-- End:: Delivery Agent Name -->
 
+              <!-- Start:: Mobile Number -->
               <base-input
-                col="5"
+                col="4"
                 type="text"
-                :placeholder="$t('PLACEHOLDERS.advertiser_mobile')"
-                v-model="filterOptions.advertiser_mobile"
+                :placeholder="$t('PLACEHOLDERS.mobileNumber')"
+                v-model="filterOptions.mobile"
               />
+              <!-- End:: Mobile Number -->
 
-              <!-- Start:: Start Date Input -->
+              <!-- Start:: Email Address -->
+              <base-input
+                col="4"
+                type="email"
+                :placeholder="$t('PLACEHOLDERS.email')"
+                v-model="filterOptions.email"
+              />
+              <!-- End:: Email Address -->
+
+              <!-- Start:: Time Period Filter -->
+              <base-select-input
+                col="4"
+                :optionsList="timePeriods"
+                :placeholder="$t('PLACEHOLDERS.timePeriod')"
+                v-model="filterOptions.timePeriod"
+              />
+              <!-- End:: Time Period Filter -->
+
+              <!-- Start:: Start Date Input (Custom Range) -->
               <base-picker-input
-                col="5"
+                col="4"
                 type="date"
-                :placeholder="$t('PLACEHOLDERS.time_from')"
-                v-model.trim="filterOptions.from_date"
+                :placeholder="$t('PLACEHOLDERS.dateFrom')"
+                v-model.trim="filterOptions.dateFrom"
+                :disabled="
+                  filterOptions.timePeriod &&
+                  filterOptions.timePeriod.value !== 'custom'
+                "
               />
               <!-- End:: Start Date Input -->
 
-              <!-- Start:: End Date Input -->
+              <!-- Start:: End Date Input (Custom Range) -->
               <base-picker-input
-                col="5"
+                col="4"
                 type="date"
-                :placeholder="$t('PLACEHOLDERS.time_to')"
-                v-model.trim="filterOptions.to_date"
+                :placeholder="$t('PLACEHOLDERS.dateTo')"
+                v-model.trim="filterOptions.dateTo"
+                :disabled="
+                  filterOptions.timePeriod &&
+                  filterOptions.timePeriod.value !== 'custom'
+                "
               />
               <!-- End:: End Date Input -->
             </div>
@@ -74,7 +104,7 @@
       <div class="table_title_wrapper">
         <div class="title_text_wrapper">
           <h5>
-            {{ $t("PLACEHOLDERS.auctions_report") }}
+            {{ $t("PLACEHOLDERS.deliveryAgentFinancialReports") }}
           </h5>
           <button
             v-if="!filterFormIsActive"
@@ -123,7 +153,7 @@
         :items-per-page="paginations.items_per_page"
         hide-default-footer
       >
-        <template v-slot:[`item.advertiser_id`]="{ index }">
+        <template v-slot:[`item.serial_number`]="{ index }">
           {{
             (paginations.current_page - 1) * paginations.items_per_page +
             index +
@@ -134,11 +164,11 @@
         <template v-slot:no-data>
           {{ $t("TABLES.noData") }}
         </template>
-        <!-- Start:: No Data State -->
+        <!-- End:: No Data State -->
 
         <template v-slot:[`item.serial`]="{ item, index }">
           <div class="table_image_wrapper">
-            <h6 class="text-danger" v-if="!item.advertiser_id">
+            <h6 class="text-danger" v-if="!item.id">
               {{ $t("TABLES.noData") }}
             </h6>
             <p v-else>
@@ -175,17 +205,21 @@
             <thead class="all-stat">
               <tr>
                 <th class="text-center" style="color: white !important">
-                  {{ $t("PLACEHOLDERS.total_app_profit") }}
+                  {{ $t("PLACEHOLDERS.totalCompletedOrders") }}
                 </th>
                 <th class="text-center" style="color: white !important">
-                  {{ $t("PLACEHOLDERS.total_paid_tax") }}
+                  {{ $t("PLACEHOLDERS.totalEarnings") }}
+                </th>
+                <th class="text-center" style="color: white !important">
+                  {{ $t("PLACEHOLDERS.totalAdminFee") }}
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr class="text-center">
-                <td>{{ totals.total_paid_price }}</td>
-                <td>{{ totals.total_paid_tax }}</td>
+                <td>{{ totals.total_complete_orders_count }}</td>
+                <td>{{ totals.total_earned }}</td>
+                <td>{{ totals.total_commission }}</td>
               </tr>
             </tbody>
           </template>
@@ -222,7 +256,7 @@
       :float-layout="true"
       :enable-download="true"
       :preview-modal="true"
-      :filename="$t('PLACEHOLDERS.auctions_report')"
+      :filename="$t('PLACEHOLDERS.deliveryAgentFinancialReports')"
       :pdf-quality="2"
       pdf-format="a4"
       :manual-pagination="false"
@@ -234,7 +268,7 @@
       <section slot="pdf-content">
         <div class="pdf_file_content">
           <h3 class="file_title">
-            {{ $t("PLACEHOLDERS.auctions_report") }}
+            {{ $t("PLACEHOLDERS.deliveryAgentFinancialReports") }}
           </h3>
           <v-simple-table>
             <template v-slot:default>
@@ -249,7 +283,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(row, index) in tableRows" :key="row.advertiser_id">
+                <tr v-for="(row, index) in tableRows" :key="row.id">
                   <td>
                     {{
                       (paginations.current_page - 1) *
@@ -258,13 +292,13 @@
                       1
                     }}
                   </td>
-                  <td>{{ row.advertiser_name }}</td>
-                  <td>{{ row.advertiser_mobile }}</td>
-                  <td>{{ row.total_finished_auctions }}</td>
-                  <td>{{ row.sum_last_bid }}</td>
-                  <td>{{ row.total }}</td>
-                  <td>{{ row.total_paid_price }}</td>
-                  <td>{{ row.total_paid_tax }}</td>
+                  <td>{{ row.name }}</td>
+                  <td>{{ row.mobile }}</td>
+                  <td>{{ row.email }}</td>
+                  <td>{{ row.completed_orders_count }}</td>
+                  <td>{{ row.total_earned }}</td>
+                  <td>{{ row.total_commission }}</td>
+                  <td>{{ row.current_user_balance }}</td>
                 </tr>
               </tbody>
             </template>
@@ -276,17 +310,21 @@
                 <thead class="all-stat">
                   <tr>
                     <th class="text-center" style="color: white !important">
-                      {{ $t("PLACEHOLDERS.total_app_profit") }}
+                      {{ $t("PLACEHOLDERS.totalCompletedOrders") }}
                     </th>
                     <th class="text-center" style="color: white !important">
-                      {{ $t("PLACEHOLDERS.total_paid_tax") }}
+                      {{ $t("PLACEHOLDERS.totalEarnings") }}
+                    </th>
+                    <th class="text-center" style="color: white !important">
+                      {{ $t("PLACEHOLDERS.totalAdminFee") }}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr class="text-center">
-                    <td>{{ totals.total_paid_price }}</td>
-                    <td>{{ totals.total_paid_tax }}</td>
+                    <td>{{ totals.total_complete_orders_count }}</td>
+                    <td>{{ totals.total_earned }}</td>
+                    <td>{{ totals.total_commission }}</td>
                   </tr>
                 </tbody>
               </template>
@@ -326,57 +364,69 @@ export default {
 
       filterFormIsActive: false,
       filterOptions: {
-        advertiser_name: null,
-        advertiser_mobile: null,
-        from_date: null,
-        to_date: null,
+        driverName: null,
+        mobile: null,
+        email: null,
+        timePeriod: null,
+        dateFrom: null,
+        dateTo: null,
       },
+      timePeriods: [
+        { id: 1, name: this.$t("BUTTONS.daily"), value: "daily" },
+        { id: 2, name: this.$t("BUTTONS.weekly"), value: "weekly" },
+        { id: 3, name: this.$t("BUTTONS.monthly"), value: "monthly" },
+        {
+          id: 4,
+          name: this.$t("PLACEHOLDERS.customDateRange"),
+          value: "custom",
+        },
+      ],
       tableHeaders: [
         {
           text: this.$t("TABLES.Admins.serialNumber"),
-          value: "advertiser_id",
+          value: "serial_number",
           align: "center",
           sortable: false,
         },
         {
-          text: this.$t("PLACEHOLDERS.advertiser_name"),
-          value: "advertiser_name",
+          text: this.$t("PLACEHOLDERS.driverName"),
+          value: "name",
           align: "center",
           sortable: false,
         },
         {
-          text: this.$t("PLACEHOLDERS.advertiser_mobile"),
-          value: "advertiser_mobile",
+          text: this.$t("PLACEHOLDERS.mobileNumber"),
+          value: "mobile",
           align: "center",
           sortable: false,
         },
         {
-          text: this.$t("PLACEHOLDERS.total_finished_auctions"),
-          value: "total_finished_auctions",
+          text: this.$t("PLACEHOLDERS.email"),
+          value: "email",
           align: "center",
           sortable: false,
         },
         {
-          text: this.$t("PLACEHOLDERS.total_finished_auctions_total"),
-          value: "sum_last_bid",
+          text: this.$t("PLACEHOLDERS.totalCompletedOrders"),
+          value: "completed_orders_count",
           align: "center",
           sortable: false,
         },
         {
-          text: this.$t("PLACEHOLDERS.total_money"),
-          value: "total",
+          text: this.$t("PLACEHOLDERS.totalEarnings"),
+          value: "total_earned",
           align: "center",
           sortable: false,
         },
         {
-          text: this.$t("PLACEHOLDERS.total_app_profit"),
-          value: "total_paid_price",
+          text: this.$t("PLACEHOLDERS.totalAdminFee"),
+          value: "total_commission",
           align: "center",
           sortable: false,
         },
         {
-          text: this.$t("PLACEHOLDERS.total_paid_tax"),
-          value: "total_paid_tax",
+          text: this.$t("PLACEHOLDERS.currentWalletBalance"),
+          value: "current_user_balance",
           align: "center",
           sortable: false,
         },
@@ -388,11 +438,9 @@ export default {
         items_per_page: 6,
       },
       totals: {
-        total_finished_auctions: 0,
-        total_paid_price: 0,
-        total_paid_tax: 0,
-        total_app_profit: 0,
-        total_tax_value: 0,
+        total_complete_orders_count: 0,
+        total_earned: 0,
+        total_commission: 0,
       },
     };
   },
@@ -402,10 +450,12 @@ export default {
       this.setTableRows();
     },
     async resetFilter() {
-      this.filterOptions.advertiser_name = null;
-      this.filterOptions.advertiser_mobile = null;
-      this.filterOptions.from_date = null;
-      this.filterOptions.to_date = null;
+      this.filterOptions.driverName = null;
+      this.filterOptions.mobile = null;
+      this.filterOptions.email = null;
+      this.filterOptions.timePeriod = null;
+      this.filterOptions.dateFrom = null;
+      this.filterOptions.dateTo = null;
       this.setTableRows();
     },
     async setTableRows() {
@@ -413,27 +463,29 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "financial-reports/auctions",
+          url: "financial-reports",
           params: {
             page: this.paginations.current_page,
-            userName: this.filterOptions.advertiser_name,
-            userMobile: this.filterOptions.advertiser_mobile,
-            from: this.filterOptions.from_date,
-            to: this.filterOptions.to_date,
+            search: this.filterOptions.driverName,
+            mobile: this.filterOptions.mobile,
+            email: this.filterOptions.email,
+            type: this.filterOptions.timePeriod?.value,
+            from: this.filterOptions.dateFrom,
+            to: this.filterOptions.dateTo,
           },
         });
         this.loading = false;
-        this.tableRows = res.data.data.data;
-        this.totals.total_finished_auctions =
-          res.data.data.totals.total_finished_auctions;
-        this.totals.total_paid_price = res.data.data.totals.total_paid_price;
-        this.totals.total_paid_tax = res.data.data.totals.total_paid_tax;
-        this.totals.total_app_profit = res.data.data.totals.total_app_profit;
-        this.totals.total_tax_value = res.data.data.totals.total_tax_value;
-        this.paginations.last_page = res.data.meta.last_page;
+        this.tableRows = res.data.data?.data || [];
+        this.totals.total_complete_orders_count =
+          res.data.data?.total?.total_complete_orders_count || 0;
+        this.totals.total_earned = res.data.data?.total?.total_earned || 0;
+        this.totals.total_commission =
+          res.data.data?.total?.total_commission || 0;
+        this.paginations.last_page = res.data.data?.links?.last_page || 1;
+        this.paginations.items_per_page = res.data.data?.links?.per_page || 15;
       } catch (error) {
         this.loading = false;
-        console.log(error.response.data.message);
+        console.log(error.response?.data?.message || error.message);
       }
     },
     async downloadPdf() {
@@ -444,45 +496,45 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "financial-reports/auctions",
+          url: "financial-reports",
           params: {
-            userName: this.filterOptions.advertiser_name,
-            userMobile: this.filterOptions.advertiser_mobile,
-            from: this.filterOptions.from_date,
-            to: this.filterOptions.to_date,
+            search: this.filterOptions.driverName,
+            mobile: this.filterOptions.mobile,
+            email: this.filterOptions.email,
+            type: this.filterOptions.timePeriod?.value,
+            from: this.filterOptions.dateFrom,
+            to: this.filterOptions.dateTo,
           },
         });
-        const allData = res.data.data.data;
+        const allData = res.data.data?.data || [];
 
         // Map data with translated headers
         const translatedData = allData.map((row, index) => {
           if (this.getAppLocale == "ar") {
             return {
-              [this.$t("PLACEHOLDERS.total_paid_tax")]: row.total_paid_tax,
-              [this.$t("PLACEHOLDERS.total_app_profit")]: row.total_paid_price,
-              [this.$t("PLACEHOLDERS.total_money")]: row.total,
-              [this.$t("PLACEHOLDERS.total_finished_auctions_total")]:
-                row.sum_last_bid,
-              [this.$t("PLACEHOLDERS.total_finished_auctions")]:
-                row.total_finished_auctions,
-              [this.$t("PLACEHOLDERS.advertiser_mobile")]:
-                row.advertiser_mobile,
-              [this.$t("PLACEHOLDERS.advertiser_name")]: row.advertiser_name,
+              [this.$t("PLACEHOLDERS.currentWalletBalance")]:
+                row.current_user_balance,
+              [this.$t("PLACEHOLDERS.totalAdminFee")]: row.total_commission,
+              [this.$t("PLACEHOLDERS.totalEarnings")]: row.total_earned,
+              [this.$t("PLACEHOLDERS.totalCompletedOrders")]:
+                row.completed_orders_count,
+              [this.$t("PLACEHOLDERS.email")]: row.email,
+              [this.$t("PLACEHOLDERS.mobileNumber")]: row.mobile,
+              [this.$t("PLACEHOLDERS.driverName")]: row.name,
               [this.$t("TABLES.Admins.serialNumber")]: index + 1,
             };
           } else {
             return {
               [this.$t("TABLES.Admins.serialNumber")]: index + 1,
-              [this.$t("PLACEHOLDERS.advertiser_name")]: row.advertiser_name,
-              [this.$t("PLACEHOLDERS.advertiser_mobile")]:
-                row.advertiser_mobile,
-              [this.$t("PLACEHOLDERS.total_finished_auctions")]:
-                row.total_finished_auctions,
-              [this.$t("PLACEHOLDERS.total_finished_auctions_total")]:
-                row.sum_last_bid,
-              [this.$t("PLACEHOLDERS.total_money")]: row.total,
-              [this.$t("PLACEHOLDERS.total_app_profit")]: row.total_paid_price,
-              [this.$t("PLACEHOLDERS.total_paid_tax")]: row.total_paid_tax,
+              [this.$t("PLACEHOLDERS.driverName")]: row.name,
+              [this.$t("PLACEHOLDERS.mobileNumber")]: row.mobile,
+              [this.$t("PLACEHOLDERS.email")]: row.email,
+              [this.$t("PLACEHOLDERS.totalCompletedOrders")]:
+                row.completed_orders_count,
+              [this.$t("PLACEHOLDERS.totalEarnings")]: row.total_earned,
+              [this.$t("PLACEHOLDERS.totalAdminFee")]: row.total_commission,
+              [this.$t("PLACEHOLDERS.currentWalletBalance")]:
+                row.current_user_balance,
             };
           }
         });
@@ -491,38 +543,49 @@ export default {
         if (this.getAppLocale === "ar") {
           // Append overall statistics at the bottom
           translatedData.push({
-            [this.$t("PLACEHOLDERS.advertiser_mobile")]: this.$t(
-              "PLACEHOLDERS.total_app_profit"
+            [this.$t("PLACEHOLDERS.driverName")]: this.$t(
+              "PLACEHOLDERS.totalCompletedOrders"
             ),
-            [this.$t("PLACEHOLDERS.total_finished_auctions")]:
-              this.totals.total_paid_price,
+            [this.$t("PLACEHOLDERS.mobileNumber")]:
+              this.totals.total_complete_orders_count,
           });
 
-          // Append overall statistics at the bottom
           translatedData.push({
-            [this.$t("PLACEHOLDERS.advertiser_mobile")]: this.$t(
-              "PLACEHOLDERS.total_tax_value"
+            [this.$t("PLACEHOLDERS.driverName")]: this.$t(
+              "PLACEHOLDERS.totalEarnings"
             ),
-            [this.$t("PLACEHOLDERS.total_finished_auctions")]:
-              this.totals.total_paid_tax,
+            [this.$t("PLACEHOLDERS.mobileNumber")]: this.totals.total_earned,
+          });
+
+          translatedData.push({
+            [this.$t("PLACEHOLDERS.driverName")]: this.$t(
+              "PLACEHOLDERS.totalAdminFee"
+            ),
+            [this.$t("PLACEHOLDERS.mobileNumber")]:
+              this.totals.total_commission,
           });
         } else {
           // Append overall statistics at the bottom
           translatedData.push({
             [this.$t("TABLES.Admins.serialNumber")]: this.$t(
-              "PLACEHOLDERS.total_app_profit"
+              "PLACEHOLDERS.totalCompletedOrders"
             ),
-            [this.$t("PLACEHOLDERS.advertiser_name")]:
-              this.totals.total_paid_price,
+            [this.$t("PLACEHOLDERS.driverName")]:
+              this.totals.total_complete_orders_count,
           });
 
-          // Append overall statistics at the bottom
           translatedData.push({
             [this.$t("TABLES.Admins.serialNumber")]: this.$t(
-              "PLACEHOLDERS.total_tax_value"
+              "PLACEHOLDERS.totalEarnings"
             ),
-            [this.$t("PLACEHOLDERS.advertiser_name")]:
-              this.totals.total_paid_tax,
+            [this.$t("PLACEHOLDERS.driverName")]: this.totals.total_earned,
+          });
+
+          translatedData.push({
+            [this.$t("TABLES.Admins.serialNumber")]: this.$t(
+              "PLACEHOLDERS.totalAdminFee"
+            ),
+            [this.$t("PLACEHOLDERS.driverName")]: this.totals.total_commission,
           });
         }
 
@@ -543,7 +606,7 @@ export default {
         link.href = url;
         link.setAttribute(
           "download",
-          `${this.$t("PLACEHOLDERS.auctions_report")}.xlsx`
+          `${this.$t("PLACEHOLDERS.deliveryAgentFinancialReports")}.xlsx`
         );
         document.body.appendChild(link);
         link.click();
@@ -553,6 +616,24 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+
+    // Navigate to driver details
+    showItem(item) {
+      this.$router.push({ path: `/drivers/show/${item.id}` });
+    },
+
+    updateRouterQueryParam(pagenationValue) {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          page: pagenationValue,
+        },
+      });
+
+      // Scroll To Screen's Top After Get Data
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
     },
   },
 

@@ -339,7 +339,7 @@ export default {
         let res = await this.$axios({
           method: "GET",
           // url: "notification/admin-notifications",
-          url: "notification/all_notifications",
+          url: "notification/sent_notifications",
           params: {
             page: this.paginations.current_page,
             title: this.filterOptions.name,
@@ -354,8 +354,8 @@ export default {
             1;
         });
         this.tableRows = res.data.data;
-        this.paginations.last_page = res.data.meta.last_page;
-        this.paginations.items_per_page = res.data.meta.per_page;
+        this.paginations.last_page = res.data.data.meta.last_page;
+        this.paginations.items_per_page = res.data.data.meta.per_page;
       } catch (error) {
         this.loading = false;
         console.log(error.response.data.message);

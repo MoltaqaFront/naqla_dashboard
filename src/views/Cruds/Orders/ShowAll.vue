@@ -19,37 +19,59 @@
         <div class="filter_form_wrapper">
           <form @submit.prevent="submitFilterForm">
             <div class="row justify-content-center align-items-center w-100">
-              <!-- Start:: Name Input -->
+              <!-- Start:: Order Number Input -->
               <base-input
-                col="6"
+                col="4"
                 type="text"
                 :placeholder="$t('PLACEHOLDERS.orderNum')"
                 v-model.trim="filterOptions.orderNum"
               />
-              <base-input
-                col="6"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.mobileClient')"
-                v-model.trim="filterOptions.mobileClient"
-              />
-              <!-- End:: Name Input -->
+              <!-- End:: Order Number Input -->
 
-              <!-- Start:: Status Input -->
+              <!-- Start:: Customer Name Input -->
               <base-select-input
-                col="6"
+                col="4"
                 :optionsList="users"
                 :placeholder="$t('PLACEHOLDERS.clientName')"
                 v-model="filterOptions.clientName"
               />
-              <!-- End:: Status Input -->
+              <!-- End:: Customer Name Input -->
+
+              <!-- Start:: Driver Name Input -->
+              <base-select-input
+                col="4"
+                :optionsList="drivers"
+                :placeholder="$t('PLACEHOLDERS.driverName')"
+                v-model="filterOptions.driverName"
+              />
+              <!-- End:: Driver Name Input -->
+
               <!-- Start:: Status Input -->
               <base-select-input
-                col="6"
-                :optionsList="activeStatuses"
+                col="4"
+                :optionsList="orderStatuses"
                 :placeholder="$t('PLACEHOLDERS.orderStatus')"
                 v-model="filterOptions.status"
               />
               <!-- End:: Status Input -->
+
+              <!-- Start:: Date From Input -->
+              <base-picker-input
+                col="4"
+                type="date"
+                :placeholder="$t('PLACEHOLDERS.dateFrom')"
+                v-model.trim="filterOptions.dateFrom"
+              />
+              <!-- End:: Date From Input -->
+
+              <!-- Start:: Date To Input -->
+              <base-picker-input
+                col="4"
+                type="date"
+                :placeholder="$t('PLACEHOLDERS.dateTo')"
+                v-model.trim="filterOptions.dateTo"
+              />
+              <!-- End:: Date To Input -->
             </div>
 
             <div class="btns_wrapper">
@@ -141,9 +163,9 @@
         </template> -->
 
         <!-- Start:: Activation Status -->
-        <template v-slot:[`item.trans_status`]="{ item }">
-          <v-chip>
-            {{ item.trans_status }}
+        <template v-slot:[`item.status`]="{ item }">
+          <v-chip :color="getStatusColor(item.status)">
+            {{ getStatusTranslation(item.status) }}
           </v-chip>
         </template>
         <!-- End:: Activation Status -->
@@ -151,6 +173,7 @@
         <!-- Start:: Actions -->
         <template v-slot:[`item.actions`]="{ item }">
           <div class="actions">
+            <!-- Show Action -->
             <a-tooltip placement="bottom">
               <template slot="title">
                 <span>{{ $t("BUTTONS.show") }}</span>
@@ -160,165 +183,68 @@
               </button>
             </a-tooltip>
 
-            <a-tooltip placement="bottom" v-if="item.status_en == 'finish'">
+            <!-- Change Status Action -->
+            <a-tooltip placement="bottom">
               <template slot="title">
-                <span>{{ $t("PLACEHOLDERS.pdf") }}</span>
+                <span>{{ $t("BUTTONS.changeStatus") }}</span>
               </template>
-              <button class="btn_show" @click="downloadPdf(item)">
-                <i class="fas fa-file-pdf"></i>
+              <button class="btn_edit" @click="selectChangeStatusItem(item)">
+                <i class="fal fa-sync-alt"></i>
               </button>
             </a-tooltip>
 
-            <div v-if="item.action == false">
-              <a-tooltip placement="bottom" v-if="item.status_en == 'new'">
-                <template slot="title">
-                  <span>{{ $t("PLACEHOLDERS.switch") }}</span>
-                </template>
-                <button class="btn_show" @click="Onswitch(item)">
-                  <i class="fas fa-random"></i>
-                </button>
-              </a-tooltip>
-
-              <a-tooltip
-                placement="bottom"
-                v-if="item.status_en == 'new' && item.date == today"
+            <!-- Update Driver Action -->
+            <a-tooltip placement="bottom">
+              <template slot="title">
+                <span>{{ $t("BUTTONS.updateDriver") }}</span>
+              </template>
+              <button
+                class=""
+                @click="selectUpdateDriverItem(item)"
               >
-                <template slot="title">
-                  <span>{{ $t("PLACEHOLDERS.road") }}</span>
-                </template>
-                <button class="btn_show" @click="OnRoad(item)">
-                  <i class="fas fa-road"></i>
-                </button>
-              </a-tooltip>
+                <i class="fal fa-user-edit"></i>
+              </button>
+            </a-tooltip>
 
-              <a-tooltip
-                placement="bottom"
-                v-if="item.status_en == 'On_the_way_to_Unit'"
-              >
-                <template slot="title">
-                  <span>{{ $t("PLACEHOLDERS.onClean") }}</span>
-                </template>
-                <button class="btn_show" @click="onClean(item)">
-                  <i class="fas fa-broom"></i>
-                </button>
-              </a-tooltip>
-
-              <a-tooltip
-                placement="bottom"
-                v-if="item.status_en == 'Cleaning_is_underway'"
-              >
-                <template slot="title">
-                  <span>{{ $t("PLACEHOLDERS.onAdd") }}</span>
-                </template>
-                <button class="btn_show" @click="onAdd(item)">
-                  <i class="fas fa-plus-circle"></i>
-                </button>
-              </a-tooltip>
-
-              <a-tooltip
-                placement="bottom"
-                v-if="item.status_en == 'Cleaning_is_underway'"
-              >
-                <template slot="title">
-                  <span>{{ $t("PLACEHOLDERS.onFinish") }}</span>
-                </template>
-                <button class="btn_show" @click="onFinish(item)">
-                  <i class="far fa-calendar-times"></i>
-                </button>
-              </a-tooltip>
-
-              <!-- <template
-                v-if="
-                  item.status == 'new' || item.status == 'accepted_from_manager'
-                "
-              >
-                <a-tooltip placement="bottom">
-                  <template slot="title">
-                    <span>{{ $t("STATUS.accepted") }}</span>
-                  </template>
-                  <button class="btn_activate" @click="selectAcceptItem(item)">
-                    <i class="fad fa-check-circle"></i>
-                  </button>
-                </a-tooltip>
-
-                <a-tooltip placement="bottom">
-                  <template slot="title">
-                    <span>{{ $t("STATUS.canceled") }}</span>
-                  </template>
-                  <button
-                    class="btn_deactivate"
-                    @click="selectDeactivateItem(item)"
-                  >
-                    <i class="fad fa-times-circle"></i>
-                  </button>
-                </a-tooltip>
-              </template> -->
-            </div>
+            <!-- Delete Action -->
+            <a-tooltip placement="bottom">
+              <template slot="title">
+                <span>{{ $t("BUTTONS.delete") }}</span>
+              </template>
+              <button class="btn_delete" @click="selectDeleteItem(item)">
+                <i class="fal fa-trash-alt"></i>
+              </button>
+            </a-tooltip>
           </div>
         </template>
         <!-- End:: Actions -->
 
         <!-- ======================== Start:: Dialogs ======================== -->
         <template v-slot:top>
-          <!-- Start:: Replay Modal -->
-          <description-modal
-            v-if="dialogReplay"
-            :modalIsOpen="dialogReplay"
-            :modalDesc="selectedReplayTextToShow"
-            @toggleModal="dialogReplay = !dialogReplay"
-          />
-          <!-- End:: Replay Modal -->
-
-          <!-- Start:: Deactivate Modal -->
-          <v-dialog v-model="switchOpen">
+          <!-- Start:: Change Status Modal -->
+          <v-dialog v-model="dialogChangeStatus" max-width="500px">
             <v-card>
               <v-card-title class="text-h5 justify-center">
-                {{ $t("PLACEHOLDERS.switchOrder") }}
+                {{ $t("PLACEHOLDERS.changeOrderStatus") }}
               </v-card-title>
 
-              <form class="w-100">
+              <form class="w-100 px-4">
                 <base-select-input
                   col="12"
-                  :optionsList="SimlerOrder"
-                  :placeholder="$t('PLACEHOLDERS.orderNum')"
-                  v-model="chosenOrder"
+                  :optionsList="orderStatuses"
+                  :placeholder="$t('PLACEHOLDERS.orderStatus')"
+                  v-model="selectedStatus"
+                  required
                 />
-              </form>
 
-              <v-card-actions>
-                <v-btn class="modal_confirm_btn" @click="HandlingSwitch(item)">
-                  {{ $t("BUTTONS.ok") }}
-                </v-btn>
-
-                <v-btn class="modal_cancel_btn" @click="switchOpen = false">{{
-                  $t("BUTTONS.cancel")
-                }}</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-dialog v-model="dialogDeactivate">
-            <v-card>
-              <v-card-title
-                class="text-h5 justify-center"
-                v-if="itemToChangeActivationStatus"
-              >
-                {{
-                  $t("PLACEHOLDERS.rejictionMessage", {
-                    name: itemToChangeActivationStatus.user.user.name,
-                  })
-                }}
-              </v-card-title>
-
-              <form class="w-100">
-                <!-- <base-select-input col="12" :optionsList="availabilityStatuses" :placeholder="$t('PLACEHOLDERS.activate')"
-                  v-model="filterOptions.isAvailable" /> -->
+                <!-- Show cancel reason if status is canceled -->
                 <base-input
+                  v-if="selectedStatus && selectedStatus.value === 'canceled'"
                   col="12"
                   rows="3"
                   type="textarea"
-                  :placeholder="$t('PLACEHOLDERS.reason')"
-                  v-model.trim="deactivateReason"
+                  :placeholder="$t('PLACEHOLDERS.cancelReason')"
+                  v-model.trim="cancelReason"
                   required
                 />
               </form>
@@ -326,39 +252,37 @@
               <v-card-actions>
                 <v-btn
                   class="modal_confirm_btn"
-                  @click="HandlingItemActivationStatus"
+                  @click="confirmChangeStatus"
+                  :disabled="isWaitingRequest"
                 >
                   {{ $t("BUTTONS.ok") }}
                 </v-btn>
 
                 <v-btn
                   class="modal_cancel_btn"
-                  @click="dialogDeactivate = false"
-                  >{{ $t("BUTTONS.cancel") }}</v-btn
+                  @click="dialogChangeStatus = false"
                 >
+                  {{ $t("BUTTONS.cancel") }}
+                </v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <!-- End:: Deactivate Modal -->
+          <!-- End:: Change Status Modal -->
 
-          <!-- Start:: Delete Modal -->
-          <v-dialog v-model="addOpen">
+          <!-- Start:: Update Driver Modal -->
+          <v-dialog v-model="dialogUpdateDriver" max-width="500px">
             <v-card>
-              <form class="w-100">
-                <base-input
+              <v-card-title class="text-h5 justify-center">
+                {{ $t("PLACEHOLDERS.updateDriver") }}
+              </v-card-title>
+
+              <form class="w-100 px-4">
+                <base-select-input
                   col="12"
-                  type="textarea"
-                  :placeholder="$t('PLACEHOLDERS.serviceDesc')"
-                  v-model.trim="serviceDesc"
-                  :label="'title'"
-                  required
-                />
-                <base-input
-                  col="12"
-                  type="number"
-                  :placeholder="$t('PLACEHOLDERS.price')"
-                  v-model.trim="servicePrice"
+                  :optionsList="drivers"
+                  :placeholder="$t('PLACEHOLDERS.driverName')"
+                  v-model="selectedDriver"
                   required
                 />
               </form>
@@ -366,46 +290,48 @@
               <v-card-actions>
                 <v-btn
                   class="modal_confirm_btn"
-                  :disabled="isWaitingRequestPrice"
-                  @click="confirmAdd"
-                  >{{ $t("BUTTONS.ok") }}</v-btn
+                  @click="confirmUpdateDriver"
+                  :disabled="isWaitingRequest"
                 >
+                  {{ $t("BUTTONS.ok") }}
+                </v-btn>
 
-                <v-btn class="modal_cancel_btn" @click="addOpen = false">{{
-                  $t("BUTTONS.cancel")
-                }}</v-btn>
+                <v-btn
+                  class="modal_cancel_btn"
+                  @click="dialogUpdateDriver = false"
+                >
+                  {{ $t("BUTTONS.cancel") }}
+                </v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="dialogDelete">
+          <!-- End:: Update Driver Modal -->
+
+          <!-- Start:: Delete Modal -->
+          <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
               <v-card-title class="text-h5 justify-center" v-if="itemToDelete">
-                {{ $t("PLACEHOLDERS.membership_request_accept") }}
+                {{
+                  $t("TITLES.DeleteConfirmingMessage", {
+                    name:
+                      itemToDelete.order_number || itemToDelete.number_order,
+                  })
+                }}
               </v-card-title>
 
-              <form class="w-100">
-                <base-select-input
-                  col="12"
-                  type="number"
-                  :optionsList="allRanks"
-                  :placeholder="$t('SIDENAV.designer.rank')"
-                  v-model.trim="number"
-                  :label="'title'"
-                  required
-                />
-                <!-- <base-input col="12" type="text" :placeholder="$t('PLACEHOLDERS.enter_settlement_amount')"
-                  v-model.trim="balance_package" required /> -->
-              </form>
-
               <v-card-actions>
-                <v-btn class="modal_confirm_btn" @click="confirmAcceptItem">{{
-                  $t("BUTTONS.ok")
-                }}</v-btn>
+                <v-btn
+                  class="modal_confirm_btn"
+                  @click="confirmDeleteItem"
+                  :disabled="isWaitingRequest"
+                >
+                  {{ $t("BUTTONS.ok") }}
+                </v-btn>
 
-                <v-btn class="modal_cancel_btn" @click="dialogDelete = false">{{
-                  $t("BUTTONS.cancel")
-                }}</v-btn>
+                <v-btn class="modal_cancel_btn" @click="dialogDelete = false">
+                  {{ $t("BUTTONS.cancel") }}
+                </v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -451,46 +377,37 @@ export default {
     ...mapGetters({
       getAppLocale: "AppLangModule/getAppLocale",
     }),
-    activeStatuses() {
+    orderStatuses() {
       return [
         {
           id: 1,
-          name: this.$t("PLACEHOLDERS.new"),
+          name: this.$t("STATUS.new"),
           value: "new",
         },
         {
           id: 2,
-          name: this.$t("PLACEHOLDERS.On_the_way_to_Unit"),
-          value: "On_the_way_to_Unit",
+          name: this.$t("STATUS.accepted"),
+          value: "accepted",
         },
         {
           id: 3,
-          name: this.$t("PLACEHOLDERS.Cleaning_is_underway"),
-          value: "Cleaning_is_underway",
-        },
-        {
-          id: 3,
-          name: this.$t("PLACEHOLDERS.canceled"),
-          value: "finish",
+          name: this.$t("STATUS.picked_up"),
+          value: "picked_up",
         },
         {
           id: 4,
-          name: this.$t("STATUS.stoped"),
+          name: this.$t("STATUS.on_the_way"),
+          value: "on_the_way",
+        },
+        {
+          id: 5,
+          name: this.$t("STATUS.delivered"),
+          value: "delivered",
+        },
+        {
+          id: 6,
+          name: this.$t("STATUS.canceled"),
           value: "canceled",
-        },
-      ];
-    },
-    userType() {
-      return [
-        {
-          id: 1,
-          name: this.$t("PLACEHOLDERS.moder"),
-          value: "manager",
-        },
-        {
-          id: 2,
-          name: this.$t("PLACEHOLDERS.impular"),
-          value: "employee",
         },
       ];
     },
@@ -501,28 +418,18 @@ export default {
       // Start:: Loading Data
       loading: false,
       isWaitingRequest: false,
-      isWaitingRequestPrice: false,
-      chosenOrder: null,
-      switchOpen: false,
-      orderData: null,
-      addOpen: false,
-      addData: false,
-      serviceDesc: null,
-      servicePrice: null,
       // End:: Loading Data
 
       // Start:: Filter Data
       filterFormIsActive: false,
       filterOptions: {
         orderNum: null,
-        mobileClient: null,
         clientName: null,
+        driverName: null,
         status: null,
-        mangement: null,
+        dateFrom: null,
+        dateTo: null,
       },
-      allProviders: [],
-      allStatus: [],
-      allRanks: [],
       // End:: Filter Data
 
       // Start:: Table Data
@@ -537,37 +444,31 @@ export default {
         },
         {
           text: this.$t("PLACEHOLDERS.orderNum"),
-          value: "number_order",
+          value: "order_number",
           align: "center",
           sortable: false,
         },
         {
           text: this.$t("PLACEHOLDERS.clientName"),
-          value: "client_name",
+          value: "user.name",
           align: "center",
           sortable: false,
         },
         {
-          text: this.$t("TABLES.subscriptions.Totalorder"),
-          value: "OrderBudget",
+          text: this.$t("PLACEHOLDERS.clientPhone"),
+          value: "user.mobile",
           align: "center",
           sortable: false,
         },
         {
-          text: this.$t("PLACEHOLDERS.orderArea"),
-          value: "Area",
+          text: this.$t("PLACEHOLDERS.driverName"),
+          value: "driver.name",
           align: "center",
           sortable: false,
         },
         {
-          text: this.$t("PLACEHOLDERS.created_at"),
-          value: "created_at",
-          align: "center",
-          sortable: false,
-        },
-        {
-          text: this.$t("PLACEHOLDERS.excuteAt"),
-          value: "date",
+          text: this.$t("PLACEHOLDERS.orderValue"),
+          value: "price",
           align: "center",
           sortable: false,
         },
@@ -577,19 +478,12 @@ export default {
           align: "center",
           sortable: false,
         },
-        // {
-        //   text: this.$t("PLACEHOLDERS.registration_otp_status"),
-        //   value: "is_verified",
-        //   align: "center",
-        //   sortable: false,
-        // },
-        // {
-        //   text: this.$t("TABLES.Clients.active"),
-        //   value: "user.is_active",
-        //   align: "center",
-        //   width: "120",
-        //   sortable: false,
-        // },
+        {
+          text: this.$t("PLACEHOLDERS.orderDate"),
+          value: "created_at",
+          align: "center",
+          sortable: false,
+        },
         {
           text: this.$t("TABLES.Clients.actions"),
           value: "actions",
@@ -609,29 +503,22 @@ export default {
       },
       // End:: Pagination Data
 
-      permissions: [],
-
-      status_now: null,
-
       // Start:: Dialogs Control Data
-      dialogReplay: false,
-      selectedReplayTextToShow: "",
-      dialogImage: false,
-      selectedItemImage: null,
-      dialogDeactivate: false,
-      itemToChangeActivationStatus: null,
-      deactivateReason: null,
+      dialogChangeStatus: false,
+      itemToChangeStatus: null,
+      selectedStatus: null,
+      cancelReason: null,
+      dialogUpdateDriver: false,
+      itemToUpdateDriver: null,
+      selectedDriver: null,
       dialogDelete: false,
       itemToDelete: null,
       // End:: Dialogs Control Data
-      status_now: null,
 
-      // balance_package: null
-      number: null,
+      // Start:: Users & Drivers Data
       users: [],
-      mangement: [],
-      SimlerOrder: [],
-      number: null,
+      drivers: [],
+      // End:: Users & Drivers Data
     };
   },
 
@@ -645,155 +532,76 @@ export default {
   },
 
   methods: {
-    downloadPdf(item) {
-      window.open(item.fatoora, "_blank");
+    // Start:: Get Status Translation
+    getStatusTranslation(status) {
+      const statusMap = {
+        new: this.$t("STATUS.new"),
+        accepted: this.$t("STATUS.accepted"),
+        picked_up: this.$t("STATUS.picked_up"),
+        on_the_way: this.$t("STATUS.on_the_way"),
+        delivered: this.$t("STATUS.delivered"),
+        canceled: this.$t("STATUS.canceled"),
+      };
+      return statusMap[status] || status;
     },
-    onAdd(item) {
-      this.addOpen = true;
-      this.addData = item;
-    },
-    async onFinish(item) {
-      try {
-        const REQUEST_DATA = new FormData();
-        REQUEST_DATA.append("status", "finish");
-        let res = await this.$axios({
-          method: "POST",
-          url: `orders/ChangeStatus/${item.id}`,
-          data: REQUEST_DATA,
-        });
-        this.$message.success(res.data.message);
-        this.setTableRows();
-      } catch (error) {
-        this.$message.error(error.response.data.message);
-        console.log(error.response.data.message);
-      }
-    },
-    async onClean(item) {
-      try {
-        const REQUEST_DATA = new FormData();
-        REQUEST_DATA.append("status", "Cleaning_is_underway");
-        let res = await this.$axios({
-          method: "POST",
-          url: `orders/ChangeStatus/${item.id}`,
-          data: REQUEST_DATA,
-        });
-        this.$message.success(res.data.message);
-        this.setTableRows();
-      } catch (error) {
-        this.$message.error(error.response.data.message);
-        console.log(error.response.data.message);
-      }
-    },
-    async OnRoad(item) {
-      try {
-        const REQUEST_DATA = new FormData();
-        REQUEST_DATA.append("status", "On_the_way_to_Unit");
-        let res = await this.$axios({
-          method: "POST",
-          url: `orders/ChangeStatus/${item.id}`,
-          data: REQUEST_DATA,
-        });
-        this.$message.success(res.data.message);
-        this.setTableRows();
-      } catch (error) {
-        this.$message.error(error.response.data.message);
-        console.log(error.response.data.message);
-      }
-    },
-    async Onswitch(item) {
-      this.switchOpen = true;
-      this.orderData = item;
-      try {
-        let res = await this.$axios({
-          method: "POST",
-          url: `orders/SimlerOrder/${item.id}`,
-        });
-        this.SimlerOrder = res.data.orders;
-      } catch (error) {
-        console.log(error.response.data.message);
-      }
-    },
-    async confirmAdd() {
-      this.isWaitingRequestPrice = true;
-      this.addOpen = true;
-      const REQUEST_DATA = new FormData();
-      if (this.serviceDesc) {
-        REQUEST_DATA.append("description", this.serviceDesc);
-      } else {
-        this.$message.error(this.$t("VALIDATION.desc"));
-      }
-      if (this.servicePrice) {
-        REQUEST_DATA.append("price", this.servicePrice);
-      } else {
-        this.$message.error(this.$t("VALIDATION.price"));
-      }
-      try {
-        let res = await this.$axios({
-          method: "POST",
-          url: `orders/AdditionService/${this.addData?.id}`,
-          data: REQUEST_DATA,
-        });
-        this.isWaitingRequestPrice = false;
-        this.addOpen = false;
-        this.addData = null;
-        this.serviceDesc = null;
-        this.servicePrice = null;
-        this.$message.success(res.data.message);
-      } catch (error) {
-        // this.addOpen = false;
-        this.isWaitingRequestPrice = false;
-        if (this.serviceDesc && this.servicePrice) {
-          this.addData = null;
-          this.serviceDesc = null;
-          this.servicePrice = null;
-          this.$message.error(error.response.data.message);
-        }
-      }
-    },
-    async HandlingSwitch() {
-      this.switchOpen = true;
-      const REQUEST_DATA = new FormData();
-      REQUEST_DATA.append("order_id", this.chosenOrder?.id);
-      try {
-        let res = await this.$axios({
-          method: "POST",
-          url: `orders/SwitchOrder/${this.orderData?.id}`,
-          data: REQUEST_DATA,
-        });
-        this.switchOpen = false;
-        this.orderData = null;
-        this.chosenOrder = null;
-        this.$message.success(res.data.message);
-      } catch (error) {
-        this.switchOpen = false;
-        this.orderData = null;
-        this.chosenOrder = null;
-        this.$message.error(error.response.data.message);
-      }
-    },
+    // End:: Get Status Translation
 
+    // Start:: Get Status Color
+    getStatusColor(status) {
+      const colorMap = {
+        new: "blue",
+        accepted: "cyan",
+        picked_up: "orange",
+        on_the_way: "purple",
+        delivered: "green",
+        canceled: "red",
+      };
+      return colorMap[status] || "grey";
+    },
+    // End:: Get Status Color
+
+    // Start:: Get Users (Clients)
     async getUsers() {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "clients?page=0&limit=0",
+          url: "clients",
+          params: {
+            page: 0,
+            limit: 0,
+          },
         });
-        this.users = res.data.data;
+        this.users = res.data.data.map((user) => ({
+          id: user.id,
+          name: user.name,
+        }));
       } catch (error) {
         console.log(error.response.data.message);
       }
     },
-    async getManeg() {
+    // End:: Get Users (Clients)
+
+    // Start:: Get Drivers
+    async getDrivers() {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "management?page=0",
+          url: "drivers",
+          params: {
+            page: 0,
+            limit: 0,
+          },
         });
-        this.mangement = res.data.data;
+        this.drivers = res.data.data.data.map((driver) => ({
+          id: driver.id,
+          name: driver.name,
+        }));
       } catch (error) {
         console.log(error.response.data.message);
       }
     },
+    // End:: Get Drivers
+
     // Start:: Handel Filter
     async submitFilterForm() {
       if (this.$route.query.page !== "1") {
@@ -806,10 +614,11 @@ export default {
     },
     async resetFilter() {
       this.filterOptions.orderNum = null;
-      this.filterOptions.mobileClient = null;
       this.filterOptions.clientName = null;
+      this.filterOptions.driverName = null;
       this.filterOptions.status = null;
-      this.filterOptions.mangement = null;
+      this.filterOptions.dateFrom = null;
+      this.filterOptions.dateTo = null;
       if (this.$route.query.page !== "1") {
         await this.$router.push({
           path: "/orders/all",
@@ -841,24 +650,18 @@ export default {
           url: "orders",
           params: {
             page: this.paginations.current_page,
-            number_order: this.filterOptions.orderNum,
-            mobile: this.filterOptions.mobileClient,
+            order_number: this.filterOptions.orderNum,
             user_id: this.filterOptions.clientName?.id,
+            driver_id: this.filterOptions.driverName?.id,
             status: this.filterOptions.status?.value,
+            date_from: this.filterOptions.dateFrom,
+            date_to: this.filterOptions.dateTo,
           },
         });
         this.loading = false;
-        // console.log("All Data ==>", res.data.data);
-        res.data.data.forEach((item, index) => {
-          item.serialNumber =
-            (this.paginations.current_page - 1) *
-              this.paginations.items_per_page +
-            index +
-            1;
-        });
-        this.tableRows = res.data.data;
-        this.paginations.last_page = res.data.meta.last_page;
-        this.paginations.items_per_page = res.data.meta.per_page;
+        this.tableRows = res.data.data.data;
+        this.paginations.last_page = res.data.data.meta.last_page;
+        this.paginations.items_per_page = res.data.data.meta.per_page;
       } catch (error) {
         this.loading = false;
         console.log(error.response.data.message);
@@ -866,96 +669,119 @@ export default {
     },
     // End:: Set Table Rows
 
-    // ===== Start:: Handling Activation & Deactivation
-    selectDeactivateItem(item) {
-      console.log(item);
-      this.dialogDeactivate = true;
-      this.itemToChangeActivationStatus = item;
-    },
-
-    async HandlingItemActivationStatus() {
-      this.dialogDeactivate = false;
-
-      const REQUEST_DATA = new FormData();
-      REQUEST_DATA.append("reason", this.deactivateReason);
-      REQUEST_DATA.append("status", "rejected");
-
-      try {
-        await this.$axios({
-          method: "POST",
-          url: `orders/change-status/${this.itemToChangeActivationStatus.id}`,
-          data: REQUEST_DATA,
-        });
-        this.$message.success(this.$t("MESSAGES.changeActivation"));
-        this.setTableRows();
-        this.itemToChangeActivationStatus = null;
-        this.deactivateReason = null;
-      } catch (error) {
-        this.$message.error(error.response.data.message);
-      }
-    },
-    // ===== End:: Handling Activation & Deactivation
-
-    // Start:: Control Modals
-    showReplayModal(replay) {
-      this.dialogReplay = true;
-      this.selectedReplayTextToShow = replay;
-    },
-    // End:: Control Modals
-
-    // ==================== Start:: Crud ====================
-    // ===== Start:: Show
+    // Start:: Show Item
     showItem(item) {
       this.$router.push({ path: `/orders/show/${item.id}` });
     },
-    // ===== End:: Show
+    // End:: Show Item
 
-    async selectAcceptItem(item) {
+    // Start:: Change Status
+    selectChangeStatusItem(item) {
+      this.dialogChangeStatus = true;
+      this.itemToChangeStatus = item;
+      this.selectedStatus = null;
+      this.cancelReason = null;
+    },
+    async confirmChangeStatus() {
+      if (!this.selectedStatus) {
+        this.$message.error(this.$t("VALIDATION.selectStatus"));
+        return;
+      }
+
+      if (this.selectedStatus.value === "canceled" && !this.cancelReason) {
+        this.$message.error(this.$t("VALIDATION.cancelReason"));
+        return;
+      }
+
+      this.isWaitingRequest = true;
       const REQUEST_DATA = new FormData();
-      REQUEST_DATA.append("status", "finished");
+      REQUEST_DATA.append("status", this.selectedStatus.value);
+      if (this.selectedStatus.value === "canceled") {
+        REQUEST_DATA.append("cancel_reason", this.cancelReason);
+      }
 
       try {
         await this.$axios({
           method: "POST",
-          url: `orders/change-status/${item.id}`,
+          url: `orders/${this.itemToChangeStatus.id}/change-status`,
           data: REQUEST_DATA,
         });
-        this.dialogDelete = false;
+        this.isWaitingRequest = false;
+        this.dialogChangeStatus = false;
+        this.itemToChangeStatus = null;
+        this.selectedStatus = null;
+        this.cancelReason = null;
+        this.$message.success(this.$t("MESSAGES.statusChanged"));
         this.setTableRows();
-        this.$message.success(this.$t("MESSAGES.verifiedSuccessfully"));
       } catch (error) {
-        this.dialogDelete = false;
+        this.isWaitingRequest = false;
         this.$message.error(error.response.data.message);
       }
     },
-    async confirmAcceptItem(item) {
+    // End:: Change Status
+
+    // Start:: Update Driver
+    selectUpdateDriverItem(item) {
+      this.dialogUpdateDriver = true;
+      this.itemToUpdateDriver = item;
+      this.selectedDriver = null;
+    },
+    async confirmUpdateDriver() {
+      if (!this.selectedDriver) {
+        this.$message.error(this.$t("VALIDATION.selectDriver"));
+        return;
+      }
+
+      this.isWaitingRequest = true;
       const REQUEST_DATA = new FormData();
-      REQUEST_DATA.append("status", "accepted");
+      REQUEST_DATA.append("driver_id", this.selectedDriver.id);
 
       try {
         await this.$axios({
           method: "POST",
-          url: `users/accept-register-request/${this.itemToDelete.user.id}`,
+          url: `orders/${this.itemToUpdateDriver.id}/update-driver`,
           data: REQUEST_DATA,
         });
-        this.dialogDelete = false;
-        (this.number = null), this.setTableRows();
-        this.$message.success(this.$t("MESSAGES.verifiedSuccessfully"));
+        this.isWaitingRequest = false;
+        this.dialogUpdateDriver = false;
+        this.itemToUpdateDriver = null;
+        this.selectedDriver = null;
+        this.$message.success(this.$t("MESSAGES.driverUpdated"));
+        this.setTableRows();
       } catch (error) {
+        this.isWaitingRequest = false;
+        this.$message.error(error.response.data.message);
+      }
+    },
+    // End:: Update Driver
+
+    // Start:: Delete Item
+    selectDeleteItem(item) {
+      this.dialogDelete = true;
+      this.itemToDelete = item;
+    },
+    async confirmDeleteItem() {
+      this.isWaitingRequest = true;
+      try {
+        await this.$axios({
+          method: "DELETE",
+          url: `orders/${this.itemToDelete.id}`,
+        });
+        this.isWaitingRequest = false;
+        this.dialogDelete = false;
+        this.$message.success(this.$t("MESSAGES.deletedSuccessfully"));
+        this.setTableRows();
+        this.itemToDelete = null;
+      } catch (error) {
+        this.isWaitingRequest = false;
         this.dialogDelete = false;
         this.$message.error(error.response.data.message);
       }
     },
-    // ==================== End:: Crud ====================
+    // End:: Delete Item
   },
 
   created() {
-    const year = this.today.getFullYear();
-    const month = String(this.today.getMonth() + 1).padStart(2, "0");
-    const day = String(this.today.getDate()).padStart(2, "0");
-    const formattedDate = `${year}-${month}-${day}`;
-    this.today = formattedDate;
-
     // Start:: Fire Methods
     window.addEventListener("click", () => {
       this.filterFormIsActive = false;
@@ -965,7 +791,7 @@ export default {
     }
     this.setTableRows();
     this.getUsers();
-    this.getManeg();
+    this.getDrivers();
     // End:: Fire Methods
   },
 };

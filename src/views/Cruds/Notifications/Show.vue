@@ -201,11 +201,8 @@ export default {
     async getNotificationData() {
       try {
         let res = await this.$axios({
-          method: "POST",
-          url: `notification/show`,
-          data: {
-            notification_id: this.$route.params.id,
-          },
+          method: "GET",
+          url: `notification/show/${this.$route.params.id}`,
         });
 
         this.data.titleAr = res.data.data.notification.data.title.ar;

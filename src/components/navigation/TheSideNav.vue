@@ -575,7 +575,7 @@
       <!-- End:: sub_sections Route -->
 
       <!-- Start:: orders Route -->
-      <!-- <div
+      <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
         v-if="$can('orders index', 'orders')"
@@ -593,7 +593,7 @@
             {{ $t("PLACEHOLDERS.orders") }}
           </span>
         </router-link>
-      </div> -->
+      </div>
       <!-- End:: orders Route -->
       <!-- Start:: orders Route -->
       <!-- <div
@@ -724,12 +724,8 @@
       <!-- Start:: sideNavbarList_providers Route -->
 
       <!-- Start:: RequestWallets Route -->
-      <!-- <div
-        class="home_route"
-        @click="$emit('fireToggleNavDrawerEmit')"
-        v-if="$can('requestwallets index', 'requestwallets')"
-      >
-        <router-link to="/RequestWallets/all">
+      <div class="home_route" @click="$emit('fireToggleNavDrawerEmit')">
+        <router-link to="/request-wallets/all">
           <span class="route_icon">
             <img
               src="@/assets/media/icons/ui_icons/bill.svg"
@@ -742,7 +738,7 @@
             {{ $t("SIDENAV.Users.wallet-settlement-requests") }}
           </span>
         </router-link>
-      </div> -->
+      </div>
       <!-- End:: RequestWallets Route -->
 
       <!-- Start:: workplaces Route -->
@@ -1123,7 +1119,7 @@
       <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
-        v-if="$can('advertisements index', 'advertisements')"
+        v-if="$can('banners index', 'banners')"
       >
         <router-link to="/Ads/all">
           <span
@@ -1171,6 +1167,25 @@
         </router-link>
       </div> -->
       <!-- End:: blogs Route -->
+
+      <!-- Start:: Delivery Agent Financial Reports Route -->
+      <!-- v-if="$can('financial_reports index', 'financial_reports')" -->
+      <div class="home_route" @click="$emit('fireToggleNavDrawerEmit')">
+        <router-link to="/financial-reports/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/bill.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.deliveryAgentFinancialReports") }}
+          </span>
+        </router-link>
+      </div>
+      <!-- End:: Delivery Agent Financial Reports Route -->
 
       <!-- Start::financial-reports Route -->
       <!-- <div
@@ -1283,7 +1298,7 @@
       <!-- Start:: rates Route -->
 
       <!-- Start:: notifications Route -->
-      <!-- <div
+      <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
         v-if="$can('notifications index', 'notifications')"
@@ -1301,7 +1316,7 @@
             {{ $t("SIDENAV.notifications.title") }}
           </span>
         </router-link>
-      </div> -->
+      </div>
       <!-- End:: notifications Route -->
 
       <!-- Start:: FAQ Route -->

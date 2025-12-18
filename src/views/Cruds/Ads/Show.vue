@@ -167,15 +167,15 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: `advertisements/${this.$route.params.id}`,
+          url: `banners/${this.$route.params.id}`,
         });
-        this.data.image.path = res.data.data.Advertisement.media;
-        // this.data.image2.path = res.data.data.Advertisement.media_en;
-        this.data.nameAr = res.data.data.Advertisement.name_ar;
-        this.data.nameEn = res.data.data.Advertisement.name_en;
-        this.data.publish_start_date = res.data.data.Advertisement.start_date;
-        this.data.publish_end_date = res.data.data.Advertisement.end_date;
-        this.data.active = res.data.data.Advertisement.is_active;
+        this.data.image.path = res.data.data.Banner.file;
+        // this.data.image2.path = res.data.data.Banner.media_en;
+        this.data.nameAr = res.data.data.Banner.name_ar;
+        this.data.nameEn = res.data.data.Banner.name_en;
+        this.data.publish_start_date = res.data.data.Banner.start_date;
+        this.data.publish_end_date = res.data.data.Banner.end_date;
+        this.data.active = res.data.data.Banner.is_active;
       } catch (error) {
         this.loading = false;
         console.log(error.response.data.message);
