@@ -198,10 +198,7 @@
               <template slot="title">
                 <span>{{ $t("BUTTONS.updateDriver") }}</span>
               </template>
-              <button
-                class=""
-                @click="selectUpdateDriverItem(item)"
-              >
+              <button class="" @click="selectUpdateDriverItem(item)">
                 <i class="fal fa-user-edit"></i>
               </button>
             </a-tooltip>
@@ -392,7 +389,7 @@ export default {
         {
           id: 3,
           name: this.$t("STATUS.picked_up"),
-          value: "picked_up",
+          value: "received",
         },
         {
           id: 4,
@@ -571,7 +568,7 @@ export default {
             limit: 0,
           },
         });
-        this.users = res.data.data.map((user) => ({
+        this.users = res.data.data.data.map((user) => ({
           id: user.id,
           name: user.name,
         }));
@@ -650,12 +647,12 @@ export default {
           url: "orders",
           params: {
             page: this.paginations.current_page,
-            order_number: this.filterOptions.orderNum,
-            user_id: this.filterOptions.clientName?.id,
-            driver_id: this.filterOptions.driverName?.id,
+            serialNumber: this.filterOptions.orderNum,
+            clientName: this.filterOptions.clientName?.id,
+            driverName: this.filterOptions.driverName?.id,
             status: this.filterOptions.status?.value,
-            date_from: this.filterOptions.dateFrom,
-            date_to: this.filterOptions.dateTo,
+            from: this.filterOptions.dateFrom,
+            to: this.filterOptions.dateTo,
           },
         });
         this.loading = false;
