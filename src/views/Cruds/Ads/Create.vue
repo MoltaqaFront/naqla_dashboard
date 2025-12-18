@@ -218,7 +218,7 @@ export default {
       REQUEST_DATA.append("name[en]", this.data.nameEn);
 
       if (this.data.image.file) {
-        REQUEST_DATA.append("advertisement_media", this.data.image.file);
+        REQUEST_DATA.append("file", this.data.image.file);
       }
       // if (this.data.image2.file) {
       //   REQUEST_DATA.append("advertisement_media", this.data.image2.file);
