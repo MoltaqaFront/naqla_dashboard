@@ -29,20 +29,32 @@
               <!-- End:: Order Number Input -->
 
               <!-- Start:: Customer Name Input -->
-              <base-select-input
+              <!-- <base-select-input
                 col="4"
                 :optionsList="users"
                 :placeholder="$t('PLACEHOLDERS.clientName')"
                 v-model="filterOptions.clientName"
+              /> -->
+              <base-input
+                col="4"
+                type="text"
+                :placeholder="$t('PLACEHOLDERS.clientName')"
+                v-model.trim="filterOptions.clientName"
               />
               <!-- End:: Customer Name Input -->
 
               <!-- Start:: Driver Name Input -->
-              <base-select-input
+              <!-- <base-select-input
                 col="4"
                 :optionsList="drivers"
                 :placeholder="$t('PLACEHOLDERS.driverName')"
                 v-model="filterOptions.driverName"
+              /> -->
+              <base-input
+                col="4"
+                type="text"
+                :placeholder="$t('PLACEHOLDERS.driverName')"
+                v-model.trim="filterOptions.driverName"
               />
               <!-- End:: Driver Name Input -->
 
@@ -648,8 +660,8 @@ export default {
           params: {
             page: this.paginations.current_page,
             serialNumber: this.filterOptions.orderNum,
-            clientName: this.filterOptions.clientName?.id,
-            driverName: this.filterOptions.driverName?.id,
+            clientName: this.filterOptions.clientName,
+            driverName: this.filterOptions.driverName,
             status: this.filterOptions.status?.value,
             from: this.filterOptions.dateFrom,
             to: this.filterOptions.dateTo,

@@ -521,12 +521,12 @@ export default {
           url: "withdraw-requests",
           params: {
             page: this.paginations.current_page,
-            driver_name: this.filterOptions.driverName,
+            name: this.filterOptions.driverName,
             email: this.filterOptions.email,
             mobile: this.filterOptions.mobile,
-            order_number: this.filterOptions.orderNumber,
-            date_from: this.filterOptions.dateFrom,
-            date_to: this.filterOptions.dateTo,
+            id: this.filterOptions.orderNumber,
+            from: this.filterOptions.dateFrom,
+            to: this.filterOptions.dateTo,
             status: this.filterOptions.status?.value,
           },
         });
