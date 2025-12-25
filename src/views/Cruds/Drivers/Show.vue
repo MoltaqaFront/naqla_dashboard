@@ -337,9 +337,9 @@ export default {
         this.data.account_holder_name = driver.account_holder_name;
         this.data.account_number = driver.account_number;
         this.data.iban_number = driver.iban_number;
-        this.data.id_image.path = driver.id_image;
+        this.data.id_image.path = driver.identity_image;
         this.data.license_image.path = driver.license_image;
-        this.data.profile_image.path = driver.profile_image;
+        this.data.profile_image.path = driver.avatar;
         this.data.car_image.path = driver.car_image;
         this.data.license_plate.path = driver.license_plate;
       } catch (error) {
