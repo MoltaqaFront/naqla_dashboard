@@ -125,6 +125,24 @@
             @selectImage="selectProfileImage"
           />
 
+          <!-- Car Image Upload -->
+          <base-image-upload-input
+            col="4"
+            identifier="car_image"
+            :preSelectedImage="data.car_image.path"
+            :placeholder="$t('PLACEHOLDERS.carImage')"
+            @selectImage="selectCarImage"
+          />
+
+          <!-- License Plate Image Upload -->
+          <base-image-upload-input
+            col="4"
+            identifier="license_plate"
+            :preSelectedImage="data.license_plate.path"
+            :placeholder="$t('PLACEHOLDERS.licensePlateImage')"
+            @selectImage="selectLicensePlate"
+          />
+
           <!-- Submit Button -->
           <div class="btn_wrapper">
             <base-button
@@ -173,6 +191,14 @@ export default {
           path: null,
           file: null,
         },
+        car_image: {
+          path: null,
+          file: null,
+        },
+        license_plate: {
+          path: null,
+          file: null,
+        },
       },
     };
   },
@@ -188,6 +214,14 @@ export default {
 
     selectProfileImage(selectedImage) {
       this.data.profile_image = selectedImage;
+    },
+
+    selectCarImage(selectedImage) {
+      this.data.car_image = selectedImage;
+    },
+
+    selectLicensePlate(selectedImage) {
+      this.data.license_plate = selectedImage;
     },
 
     validateFormInputs() {
@@ -237,6 +271,12 @@ export default {
       if (this.data.profile_image.file) {
         REQUEST_DATA.append("profile_image", this.data.profile_image.file);
       }
+      if (this.data.car_image.file) {
+        REQUEST_DATA.append("car_image", this.data.car_image.file);
+      }
+      if (this.data.license_plate.file) {
+        REQUEST_DATA.append("license_plate", this.data.license_plate.file);
+      }
 
       REQUEST_DATA.append("_method", "PUT");
 
@@ -276,6 +316,8 @@ export default {
         this.data.id_image.path = driver.identity_image;
         this.data.license_image.path = driver.license_image;
         this.data.profile_image.path = driver.avatar;
+        this.data.car_image.path = driver.car_image;
+        this.data.license_plate.path = driver.license_plate;
       } catch (error) {
         this.loading = false;
         console.log(error?.response?.data?.message);

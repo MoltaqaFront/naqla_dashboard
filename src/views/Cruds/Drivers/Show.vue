@@ -129,6 +129,129 @@
             ></v-switch>
           </div>
           <!-- End:: Deactivate Switch Input -->
+
+          <!-- Start:: Driver Images Section -->
+          <div class="col-12 mt-4 mb-3">
+            <h5
+              style="
+                color: #007f5f;
+                border-bottom: 2px solid #007f5f;
+                padding-bottom: 10px;
+              "
+            >
+              {{ $t("PLACEHOLDERS.driverImages") }}
+            </h5>
+          </div>
+
+          <!-- Start:: ID Image -->
+          <div class="col-6 mb-4" v-if="data.id_image.path">
+            <h6 style="color: #007f5f; margin-bottom: 15px">
+              {{ $t("PLACEHOLDERS.idImage") }}
+            </h6>
+            <div class="preview-container text-center">
+              <img
+                :src="data.id_image.path"
+                :alt="$t('PLACEHOLDERS.idImage')"
+                style="
+                  max-width: 100%;
+                  max-height: 300px;
+                  border-radius: 8px;
+                  border: 1px solid #ddd;
+                  cursor: pointer;
+                "
+                @click="window.open(data.id_image.path, '_blank')"
+              />
+            </div>
+          </div>
+          <!-- End:: ID Image -->
+
+          <!-- Start:: License Image -->
+          <div class="col-6 mb-4" v-if="data.license_image.path">
+            <h6 style="color: #007f5f; margin-bottom: 15px">
+              {{ $t("PLACEHOLDERS.licenseImage") }}
+            </h6>
+            <div class="preview-container text-center">
+              <img
+                :src="data.license_image.path"
+                :alt="$t('PLACEHOLDERS.licenseImage')"
+                style="
+                  max-width: 100%;
+                  max-height: 300px;
+                  border-radius: 8px;
+                  border: 1px solid #ddd;
+                  cursor: pointer;
+                "
+                @click="window.open(data.license_image.path, '_blank')"
+              />
+            </div>
+          </div>
+          <!-- End:: License Image -->
+
+          <!-- Start:: Profile Image -->
+          <div class="col-6 mb-4" v-if="data.profile_image.path">
+            <h6 style="color: #007f5f; margin-bottom: 15px">
+              {{ $t("PLACEHOLDERS.profileImage") }}
+            </h6>
+            <div class="preview-container text-center">
+              <img
+                :src="data.profile_image.path"
+                :alt="$t('PLACEHOLDERS.profileImage')"
+                style="
+                  max-width: 100%;
+                  max-height: 300px;
+                  border-radius: 8px;
+                  border: 1px solid #ddd;
+                  cursor: pointer;
+                "
+                @click="window.open(data.profile_image.path, '_blank')"
+              />
+            </div>
+          </div>
+          <!-- End:: Profile Image -->
+
+          <!-- Start:: Car Image -->
+          <div class="col-6 mb-4" v-if="data.car_image.path">
+            <h6 style="color: #007f5f; margin-bottom: 15px">
+              {{ $t("PLACEHOLDERS.carImage") }}
+            </h6>
+            <div class="preview-container text-center">
+              <img
+                :src="data.car_image.path"
+                :alt="$t('PLACEHOLDERS.carImage')"
+                style="
+                  max-width: 100%;
+                  max-height: 300px;
+                  border-radius: 8px;
+                  border: 1px solid #ddd;
+                  cursor: pointer;
+                "
+                @click="window.open(data.car_image.path, '_blank')"
+              />
+            </div>
+          </div>
+          <!-- End:: Car Image -->
+
+          <!-- Start:: License Plate Image -->
+          <div class="col-6 mb-4" v-if="data.license_plate.path">
+            <h6 style="color: #007f5f; margin-bottom: 15px">
+              {{ $t("PLACEHOLDERS.licensePlateImage") }}
+            </h6>
+            <div class="preview-container text-center">
+              <img
+                :src="data.license_plate.path"
+                :alt="$t('PLACEHOLDERS.licensePlateImage')"
+                style="
+                  max-width: 100%;
+                  max-height: 300px;
+                  border-radius: 8px;
+                  border: 1px solid #ddd;
+                  cursor: pointer;
+                "
+                @click="window.open(data.license_plate.path, '_blank')"
+              />
+            </div>
+          </div>
+          <!-- End:: License Plate Image -->
         </div>
       </form>
     </div>
@@ -161,6 +284,12 @@ export default {
           path: null,
         },
         profile_image: {
+          path: null,
+        },
+        car_image: {
+          path: null,
+        },
+        license_plate: {
           path: null,
         },
       },
@@ -211,6 +340,8 @@ export default {
         this.data.id_image.path = driver.id_image;
         this.data.license_image.path = driver.license_image;
         this.data.profile_image.path = driver.profile_image;
+        this.data.car_image.path = driver.car_image;
+        this.data.license_plate.path = driver.license_plate;
       } catch (error) {
         this.loading = false;
         console.log(error?.response?.data?.message);

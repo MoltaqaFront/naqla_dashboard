@@ -1345,6 +1345,8 @@
     "idImage": "صورة الهوية",
     "licenseImage": "صورة الرخصة",
     "profileImage": "الصورة الشخصية",
+    "carImage": "صورة السيارة",
+    "licensePlateImage": "صورة لوحة السيارة",
     "birthDate": "تاريخ الميلاد",
     "joinDate": "تاريخ الانضمام",
     "age": "العمر",

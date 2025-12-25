@@ -1304,6 +1304,8 @@
     "idImage": "ID Card Image",
     "licenseImage": "License Image",
     "profileImage": "Profile Image",
+    "carImage": "Car Image",
+    "licensePlateImage": "License Plate Image",
     "birthDate": "Birth Date",
     "joinDate": "Join Date",
     "age": "Age",

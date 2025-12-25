@@ -158,6 +158,56 @@
             </div>
           </div>
           <!-- End:: Driving License -->
+
+          <!-- Start:: Car Image -->
+          <div class="col-6 mb-4">
+            <h6 style="color: #007f5f; margin-bottom: 15px">
+              {{ $t("PLACEHOLDERS.carImage") }}
+            </h6>
+            <div class="preview-container text-center">
+              <img
+                v-if="data.car_image"
+                :src="data.car_image"
+                :alt="$t('PLACEHOLDERS.carImage')"
+                style="
+                  max-width: 100%;
+                  max-height: 300px;
+                  border-radius: 8px;
+                  border: 1px solid #ddd;
+                "
+                @click="openImageModal(data.car_image)"
+              />
+              <p v-else class="text-muted">
+                {{ $t("PLACEHOLDERS.no_image_available") }}
+              </p>
+            </div>
+          </div>
+          <!-- End:: Car Image -->
+
+          <!-- Start:: License Plate Image -->
+          <div class="col-6 mb-4">
+            <h6 style="color: #007f5f; margin-bottom: 15px">
+              {{ $t("PLACEHOLDERS.licensePlateImage") }}
+            </h6>
+            <div class="preview-container text-center">
+              <img
+                v-if="data.license_plate"
+                :src="data.license_plate"
+                :alt="$t('PLACEHOLDERS.licensePlateImage')"
+                style="
+                  max-width: 100%;
+                  max-height: 300px;
+                  border-radius: 8px;
+                  border: 1px solid #ddd;
+                "
+                @click="openImageModal(data.license_plate)"
+              />
+              <p v-else class="text-muted">
+                {{ $t("PLACEHOLDERS.no_image_available") }}
+              </p>
+            </div>
+          </div>
+          <!-- End:: License Plate Image -->
         </div>
       </form>
     </div>
@@ -186,6 +236,8 @@ export default {
         avatar: null,
         license_image: null,
         identity_image: null,
+        car_image: null,
+        license_plate: null,
         created_at: null,
         vehicle: null,
       },
@@ -249,6 +301,8 @@ export default {
         this.data.avatar = delegateData.avatar;
         this.data.license_image = delegateData.license_image;
         this.data.identity_image = delegateData.identity_image;
+        this.data.car_image = delegateData.car_image;
+        this.data.license_plate = delegateData.license_plate;
         this.data.created_at = delegateData.created_at;
         this.data.vehicle = delegateData.vehicle;
       } catch (error) {

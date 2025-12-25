@@ -22,7 +22,7 @@
             <div class="row justify-content-center align-items-center w-100">
               <!-- Start:: Delivery Agent Name Input -->
               <base-input
-                col="4"
+                col="3"
                 type="text"
                 :placeholder="$t('PLACEHOLDERS.driverName')"
                 v-model.trim="filterOptions.driverName"
@@ -31,7 +31,7 @@
 
               <!-- Start:: Email Input -->
               <base-input
-                col="4"
+                col="3"
                 type="email"
                 :placeholder="$t('PLACEHOLDERS.email')"
                 v-model.trim="filterOptions.email"
@@ -40,7 +40,7 @@
 
               <!-- Start:: Mobile Number Input -->
               <base-input
-                col="4"
+                col="3"
                 type="text"
                 :placeholder="$t('PLACEHOLDERS.mobileNumber')"
                 v-model.trim="filterOptions.mobile"
@@ -49,7 +49,7 @@
 
               <!-- Start:: Order Number Input -->
               <base-input
-                col="4"
+                col="3"
                 type="text"
                 :placeholder="$t('PLACEHOLDERS.orderNum')"
                 v-model.trim="filterOptions.orderNumber"
@@ -393,7 +393,7 @@ export default {
         },
         {
           text: this.$t("PLACEHOLDERS.orderNum"),
-          value: "serial_number",
+          value: "id",
           sortable: false,
           align: "center",
         },
