@@ -279,11 +279,11 @@ export default {
 
         // Set user type based on is_company field
         this.data.userType = this.userTypes.find(
-          (type) => type.value === (client.is_company ? 1 : 0)
+          (type) => type.value === (client.type=='company' ? 1 : 0)
         );
 
         // Set company-specific fields if user is a company
-        if (client.is_company) {
+        if (client.type == 'company') {
           this.data.commercial_register_number =
             client.commercial_register_number;
           this.data.discount_percentage = client.discount_percentage;

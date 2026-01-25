@@ -343,6 +343,8 @@ export default {
           params: {
             page: this.paginations.current_page,
             title: this.filterOptions.name,
+            per_page: this.paginations.items_per_page,
+            limit: this.paginations.items_per_page,
           },
         });
         this.loading = false;
@@ -354,11 +356,12 @@ export default {
             1;
         });
         this.tableRows = res.data.data;
-        this.paginations.last_page = res.data.data.meta.last_page;
-        this.paginations.items_per_page = res.data.data.meta.per_page;
+        this.paginations.last_page = res.data.meta.last_page;
+        this.paginations.items_per_page = res.data.meta.per_page;
       } catch (error) {
         this.loading = false;
-        console.log(error.response.data.message);
+        console.log(error);
+        // console.log(error.response.data.message);
       }
     },
     // End:: Set Table Rows

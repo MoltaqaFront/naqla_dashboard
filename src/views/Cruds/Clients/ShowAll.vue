@@ -159,6 +159,9 @@
             <template v-else-if="item.type == 'business'">
               {{ $t("PLACEHOLDERS.business") }}
             </template>
+            <template v-else-if="item.type == 'company'">
+              {{ $t("PLACEHOLDERS.company") }}
+            </template>
           </h6>
         </template>
 
@@ -187,7 +190,7 @@
         </template>
 
         <template v-slot:[`item.mobile`]="{ item }">
-          {{  item.mobile }}
+          {{ item.mobile }}
         </template>
 
         <template v-slot:[`item.has_verification`]="{ item }">
