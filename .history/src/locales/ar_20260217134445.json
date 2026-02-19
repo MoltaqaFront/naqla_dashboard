@@ -1272,7 +1272,7 @@
   },
 
   "PLACEHOLDERS": {
-    "fixed_tax": "رسوم الخدمه الثابته بالريال",
+    "fixed_tax": "رسوم الخدمه الثابته",
     "branches": "الفروع",
     "exhibitor_name": "اسم المكتب",
     "exhibitor_type_trans": "نوع المكتب",

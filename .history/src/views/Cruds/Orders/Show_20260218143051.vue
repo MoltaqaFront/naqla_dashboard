@@ -303,7 +303,7 @@
             :placeholder="$t('PLACEHOLDERS.driverProfit')"
             v-model="data.payment_data.provider_profit"
             disabled
-          />
+          />aaa
           <base-input
             v-if="data.payment_data.fixed_tax"
             col="4"
@@ -311,7 +311,7 @@
             :placeholder="$t('PLACEHOLDERS.fixed_tax')"
             v-model="data.payment_data.fixed_tax"
             disabled
-          />
+          />bbb
           <!-- Cancel Reason if canceled -->
           <div class="col-12 mb-4 mt-4" v-if="data.cancel_reason">
             <h5>{{ $t("PLACEHOLDERS.cancelInformation") }}</h5>
@@ -387,7 +387,7 @@ export default {
           payment_method: null,
           gateway_reference: null,
           commission_ratio: null,
-          fixed_tax:null,
+          fixed_tax
           commission_amount: null,
           provider_profit: null,
         },
@@ -462,7 +462,6 @@ export default {
             commission_ratio: order.payment_data.commission_ratio,
             commission_amount: order.payment_data.commission_amount,
             provider_profit: order.payment_data.provider_profit,
-            fixed_tax:order.fixed_tax
           };
         }
       } catch (error) {

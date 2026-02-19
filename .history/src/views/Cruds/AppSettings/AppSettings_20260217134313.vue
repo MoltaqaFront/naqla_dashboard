@@ -106,7 +106,6 @@ export default {
 
         // Map the response data to component data
         this.data.tax = settings.tax;
-        this.data.fixed_tax = settings.fixed_tax;
         this.data.price_per_km = settings.price_per_km;
         this.data.driver_order_percentage = settings.driver_order_percentage;
       } catch (error) {

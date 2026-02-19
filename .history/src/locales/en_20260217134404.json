@@ -1271,7 +1271,7 @@
   },
 
   "PLACEHOLDERS": {
-    "fixed_tax": "Fixed Service Charge (SAR)",
+    "fixed_tax": "Fixed Tax",
     "branches": "branches",
     "exhibitor_name": "Office Name",
     "exhibitor_type_trans": "Office Type",

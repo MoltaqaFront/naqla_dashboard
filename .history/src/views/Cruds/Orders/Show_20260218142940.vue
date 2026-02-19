@@ -305,7 +305,7 @@
             disabled
           />
           <base-input
-            v-if="data.payment_data.fixed_tax"
+            v-if="data.fixed_tax"
             col="4"
             type="text"
             :placeholder="$t('PLACEHOLDERS.fixed_tax')"
@@ -387,7 +387,6 @@ export default {
           payment_method: null,
           gateway_reference: null,
           commission_ratio: null,
-          fixed_tax:null,
           commission_amount: null,
           provider_profit: null,
         },
@@ -462,7 +461,6 @@ export default {
             commission_ratio: order.payment_data.commission_ratio,
             commission_amount: order.payment_data.commission_amount,
             provider_profit: order.payment_data.provider_profit,
-            fixed_tax:order.fixed_tax
           };
         }
       } catch (error) {
